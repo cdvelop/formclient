@@ -8,7 +8,7 @@ import (
 
 func Add(d domAdapter) *FormClient {
 
-	fc := FormClient{
+	f := FormClient{
 		last_object:    &model.Object{},
 		html_form:      js.Value{},
 		data_object:    map[string]string{},
@@ -19,6 +19,6 @@ func Add(d domAdapter) *FormClient {
 		dom:            d,
 	}
 
-	return &fc
+	return &f
 
 }
