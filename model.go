@@ -7,7 +7,7 @@ import (
 )
 
 type domAdapter interface {
-	Log(message ...any)
+	model.Log
 	GetHtmlModule(module_name string) (*js.Value, error)
 	GetObjectByName(name_to_search string) (*model.Object, error)
 }
