@@ -56,7 +56,11 @@ func (d FormClient) getHtmlInput(field *model.Field) (input js.Value, value stri
 	return input, value, nil
 }
 
-func getHtmlInput(form js.Value, f model.Field) (js.Value, error) {
+func getFormInput(form js.Value, f model.Field) (js.Value, error) {
+
+	if f.Input == nil {
+		return js.Value{}, model.Error("getFormInput error. input nulo en campo", f.Name)
+	}
 
 	var input_type string
 	var all string
@@ -70,7 +74,7 @@ func getHtmlInput(form js.Value, f model.Field) (js.Value, error) {
 	}
 
 	input = form.Call("querySelector"+all, input_type+"[name='"+f.Name+"']")
-	if input.IsNull() {
+	if !input.Truthy() {
 		return js.Value{}, model.Error("input:", f.Name, "tipo:", f.Input.HtmlName(), "no encontrado en formulario")
 	}
 

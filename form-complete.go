@@ -6,21 +6,22 @@ import (
 	"github.com/cdvelop/model"
 )
 
-func (f FormClient) FormAutoFill(o *model.Object) {
+func (f FormClient) FormAutoFill(o *model.Object) error {
 
 	test_data, err := o.TestData(1, true, false)
 	if err != nil {
-		f.dom.Log(err)
+		return err
 	}
 
-	err = f.formComplete(o, test_data[0])
+	err = f.FormComplete(o, test_data[0])
 	if err != nil {
-		f.dom.Log(err)
+		return err
 	}
 
+	return nil
 }
 
-func (f FormClient) formComplete(o *model.Object, data map[string]string) error {
+func (f FormClient) FormComplete(o *model.Object, data map[string]string) error {
 
 	if o == nil {
 		return model.Error("formComplete object nil")
@@ -31,24 +32,28 @@ func (f FormClient) formComplete(o *model.Object, data map[string]string) error 
 		return err
 	}
 
-	form := module_html.Call("querySelector", `form[name="`+o.Name+`"]`)
-	// form := module_html.Call("querySelector", "form", "#"+o.Name)
-	if !form.Truthy() {
-		return model.Error("formComplete error no se logro obtener formulario")
+	form, err := f.getHtmlForm(*module_html, o)
+	if err != nil {
+		return err
 	}
 
-	form.Call("reset")
+	err = f.reset(form, o)
+	if err != nil {
+		return err
+	}
 
-	for _, f := range o.Fields {
+	for _, field := range o.RenderFields() {
 
-		input, err := getHtmlInput(form, f)
+		input, err := getFormInput(*form, field)
 		if err != nil {
 			return err
 		}
 
-		new_value := data[f.Name]
+		new_value := data[field.Name]
 
-		switch f.Input.HtmlName() {
+		// f.dom.Log("SELECCIÓN: ", field.Input.HtmlName(), field.Name, "VALOR:", new_value, input)
+
+		switch field.Input.HtmlName() {
 		case "checkbox":
 			// Log("checkbox: ", f.Name, "tamaño", input.Length(), input)
 
@@ -83,10 +88,10 @@ func (f FormClient) formComplete(o *model.Object, data map[string]string) error 
 
 		default:
 
-			// Log("SELECCIÓN: ", f.Input.HtmlName(), f.Name, input)
-
 			input.Set("value", new_value)
 		}
+
+		// f.dom.Log("*** HASTA AQUÍ OK 1", field.Name)
 
 	}
 
