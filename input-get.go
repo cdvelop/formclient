@@ -6,7 +6,7 @@ import (
 	"github.com/cdvelop/model"
 )
 
-func (d FormClient) getHtmlInput(field *model.Field) (input js.Value, value string, err error) {
+func (d FormClient) getFormInputValue(field *model.Field) (input js.Value, value string, err error) {
 
 	input = d.html_form.Get(field.Name)
 	if !input.Truthy() {
@@ -16,7 +16,7 @@ func (d FormClient) getHtmlInput(field *model.Field) (input js.Value, value stri
 
 	switch field.Input.HtmlName() {
 	case "checkbox":
-		var comma bool
+		var comma string
 		// log("checkbox", field.Name)
 
 		for i := 0; i < input.Length(); i++ {
@@ -24,12 +24,9 @@ func (d FormClient) getHtmlInput(field *model.Field) (input js.Value, value stri
 			temp = input.Index(i)
 
 			if check.Get("checked").Bool() {
-				if comma {
-					value += ","
-				}
 
-				value += check.Get("value").String()
-				comma = true // se necesita coma para el siguiente elemento
+				value += comma + check.Get("value").String()
+				comma = "," // se necesita coma para el siguiente elemento
 			}
 		}
 

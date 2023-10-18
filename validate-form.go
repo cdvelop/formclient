@@ -18,7 +18,7 @@ func (f *FormClient) validateForm(source_input *js.Value) error {
 		return err
 	}
 
-	input, new_value, err := f.getHtmlInput(&source_fields[0])
+	input, new_value, err := f.getFormInputValue(&source_fields[0])
 	if err != nil {
 		return err
 	}
@@ -33,7 +33,7 @@ func (f *FormClient) validateForm(source_input *js.Value) error {
 
 		if field.Name != source_field_name {
 
-			input, new_value, err := f.getHtmlInput(&field)
+			input, new_value, err := f.getFormInputValue(&field)
 			if err != nil {
 				return err
 			}
