@@ -25,5 +25,12 @@ func (f FormClient) reset(form *js.Value, o *model.Object) error {
 
 	form.Call("reset")
 
+	for _, field := range o.RenderFields() {
+
+		if field.Input.InputReset != nil {
+			field.Input.ResetInput()
+		}
+	}
+
 	return nil
 }

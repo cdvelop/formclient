@@ -68,6 +68,7 @@ func getFormInput(form js.Value, f model.Field) (js.Value, error) {
 	case "checkbox", "radio":
 		input_type = "input[type='" + f.Input.HtmlName() + "']"
 		all = "All"
+
 	}
 
 	input = form.Call("querySelector"+all, input_type+"[name='"+f.Name+"']")
