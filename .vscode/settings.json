@@ -1,0 +1,12 @@
+{
+    "go.toolsEnvVars": {
+        "GOARCH": "wasm",
+        "GOOS": "js"
+    },
+    "go.buildTags": "js,wasm",
+    "cSpell.words": [
+        "localdb",
+        "readwrite",
+        "upgradeneeded"
+    ],
+}

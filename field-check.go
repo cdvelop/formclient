@@ -18,7 +18,7 @@ func (f *FormClient) fieldCheck(field *model.Field, input *js.Value, new_value s
 	}
 
 	if f.data_object[field.Name] != new_value {
-		f.dom.Log("---new value:", new_value, "campo:", field.Name)
+		f.Log("---new value:", new_value, "campo:", field.Name)
 		f.data_object[field.Name] = new_value
 	}
 

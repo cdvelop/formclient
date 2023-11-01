@@ -27,7 +27,7 @@ func (f FormClient) FormComplete(o *model.Object, data map[string]string) error 
 		return model.Error("formComplete object nil")
 	}
 
-	module_html, err := f.dom.GetHtmlModule(o.ModuleName)
+	module_html, err := f.GetHtmlModule(o.ModuleName)
 	if err != nil {
 		return err
 	}
@@ -86,14 +86,32 @@ func (f FormClient) FormComplete(o *model.Object, data map[string]string) error 
 
 			// Log("SELECCIÓN radio: ", f.Name, input)
 		case "file":
-
 			if field.Input.InputView != nil {
-				new_html := field.Input.BuildNewView(new_value)
-				// f.dom.Log("FILE INPUT HTML NUEVO:", new_html, "en input:", input)
-				input.Set("innerHTML", new_html)
+
+				object_id := data[o.PrimaryKeyName()]
+
+				f.Log("ID OBJECTO CON ARCHIVOS SELECCIONADO :", object_id)
+
+				f.ReadDataAsyncInDB(
+					"file",
+					[]map[string]string{{
+						"WHERE": "object_id",
+						"ARGS":  object_id,
+					},
+					}, func(new_data []map[string]string, err error) {
+
+						if err != nil {
+							f.Log(err)
+							return
+						}
+
+						new_html := field.Input.BuildNewView(new_data)
+						// f.dom.Log("FILE INPUT HTML NUEVO:", new_html, "en input:", input)
+						input.Set("innerHTML", new_html)
+					})
 
 			} else {
-				f.dom.Log(" ERROR InputView nulo en FILE INPUT: ", o.Module.ModuleName, field.Name)
+				f.Log(" ERROR InputView nulo en FILE INPUT: ", o.Module.ModuleName, field.Name)
 			}
 
 		default:
@@ -101,7 +119,8 @@ func (f FormClient) FormComplete(o *model.Object, data map[string]string) error 
 			input.Set("value", new_value)
 		}
 
-		// f.dom.Log("*** HASTA AQUÍ OK 1", field.Name)
+		f.Log("*** ", field.Name, " html name:", field.Input.HtmlName())
+		f.Log("*** value:", new_value)
 
 	}
 

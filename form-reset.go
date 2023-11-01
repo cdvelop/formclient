@@ -8,7 +8,7 @@ import (
 
 func (f FormClient) FormReset(o *model.Object) error {
 
-	module_html, err := f.dom.GetHtmlModule(o.ModuleName)
+	module_html, err := f.GetHtmlModule(o.ModuleName)
 	if err != nil {
 		return err
 	}

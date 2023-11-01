@@ -45,9 +45,9 @@ func (f *FormClient) validateForm(source_input *js.Value) error {
 		}
 	}
 
-	f.dom.Log("*RESUMEN FORMULARIO:")
+	f.Log("*RESUMEN FORMULARIO:")
 	for key, value := range f.data_object {
-		f.dom.Log("FIELD NAME: ", key, " VALUE: ", value)
+		f.Log("FIELD NAME: ", key, " VALUE: ", value)
 	}
 
 	return nil

@@ -13,6 +13,9 @@ type domAdapter interface {
 }
 
 type FormClient struct {
+	model.DataBaseAdapter
+	domAdapter
+
 	last_object *model.Object
 
 	html_form   js.Value
@@ -23,6 +26,4 @@ type FormClient struct {
 	action_delete bool
 
 	timeout_typing js.Value
-
-	dom domAdapter
 }

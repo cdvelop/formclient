@@ -27,7 +27,7 @@ func (f *FormClient) currentObject(input []js.Value) error {
 	} else {
 
 		if f.last_object.Name != form_name { //objeto ha cambiado
-			f.dom.Log("objeto cambio nuevo: " + form_name + ", anterior: " + f.last_object.Name)
+			f.Log("objeto cambio nuevo: " + form_name + ", anterior: " + f.last_object.Name)
 
 			//reset data formulario
 			f.data_object = nil
@@ -41,14 +41,14 @@ func (f *FormClient) currentObject(input []js.Value) error {
 
 func (f *FormClient) setCurrentObject(object_name string) error {
 
-	object, err := f.dom.GetObjectByName(object_name)
+	object, err := f.GetObjectByName(object_name)
 	if err != nil {
 		return err
 	}
 
 	f.last_object = object
 
-	f.dom.Log("*OBJETO ACTUAL:", f.last_object.Name)
+	f.Log("*OBJETO ACTUAL:", f.last_object.Name)
 
 	return nil
 }

@@ -18,8 +18,7 @@ func (f *FormClient) UserFormTyping(this js.Value, source_input []js.Value) inte
 
 		err := f.currentObject(source_input)
 		if err != nil {
-			f.dom.Log(err)
-			return nil
+			return f.Log(err)
 		}
 
 		err = f.validateForm(&source_input[0])
@@ -30,7 +29,7 @@ func (f *FormClient) UserFormTyping(this js.Value, source_input []js.Value) inte
 
 		f.setActionType()
 
-		f.dom.Log("formulario correcto")
+		f.Log("formulario correcto")
 
 		// err = f.db.CreateObjectsInDB()
 
