@@ -90,7 +90,7 @@ func (f FormClient) FormComplete(o *model.Object, data map[string]string) error 
 
 				object_id := data[o.PrimaryKeyName()]
 
-				f.Log("ID OBJECTO CON ARCHIVOS SELECCIONADO :", object_id)
+				// f.Log("ID OBJECTO CON ARCHIVOS SELECCIONADO :", object_id)
 
 				f.ReadDataAsyncInDB(
 					"file",
@@ -119,8 +119,8 @@ func (f FormClient) FormComplete(o *model.Object, data map[string]string) error 
 			input.Set("value", new_value)
 		}
 
-		f.Log("*** ", field.Name, " html name:", field.Input.HtmlName())
-		f.Log("*** value:", new_value)
+		// f.Log("*** ", field.Name, " html name:", field.Input.HtmlName())
+		// f.Log("*** value:", new_value)
 
 	}
 
