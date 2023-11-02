@@ -86,7 +86,7 @@ func (f FormClient) FormComplete(o *model.Object, data map[string]string) error 
 
 			// Log("SELECCIÓN radio: ", f.Name, input)
 		case "file":
-			if field.Input.InputView != nil {
+			if field.Input.ItemView != nil {
 
 				object_id := data[o.PrimaryKeyName()]
 
@@ -105,13 +105,13 @@ func (f FormClient) FormComplete(o *model.Object, data map[string]string) error 
 							return
 						}
 
-						new_html := field.Input.BuildNewView(new_data)
+						new_html := field.Input.BuildItemView(new_data...)
 						// f.dom.Log("FILE INPUT HTML NUEVO:", new_html, "en input:", input)
 						input.Set("innerHTML", new_html)
 					})
 
 			} else {
-				f.Log(" ERROR InputView nulo en FILE INPUT: ", o.Module.ModuleName, field.Name)
+				f.Log(" ERROR ItemView nulo en FILE INPUT: ", o.Module.ModuleName, field.Name)
 			}
 
 		default:
