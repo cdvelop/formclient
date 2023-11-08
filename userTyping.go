@@ -23,8 +23,7 @@ func (f *FormClient) UserFormTyping(this js.Value, source_input []js.Value) inte
 
 		err = f.validateForm(&source_input[0])
 		if err != nil {
-			// f.Log(err.Error())
-			return nil
+			return f.Log(err)
 		}
 
 		f.setActionType()

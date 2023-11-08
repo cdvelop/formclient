@@ -17,9 +17,16 @@ func (f *FormClient) fieldCheck(field *model.Field, input *js.Value, new_value s
 		return err
 	}
 
-	if f.data_object[field.Name] != new_value {
+	if f.form_data[field.Name] != new_value {
 		f.Log("---new value:", new_value, "campo:", field.Name)
-		f.data_object[field.Name] = new_value
+		f.form_data[field.Name] = new_value
+		err := f.UpdateObjectsInDB(f.last_object.Table, f.form_data)
+		if err != nil {
+			return err
+		}
+
+		f.UserMessage("Registro Actualizado")
+
 	}
 
 	return nil

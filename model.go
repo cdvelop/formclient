@@ -7,6 +7,7 @@ import (
 )
 
 type domAdapter interface {
+	UserMessage(message ...any) interface{}
 	model.Logger
 	GetHtmlModule(module_name string) (*js.Value, error)
 	GetObjectByName(name_to_search string) (*model.Object, error)
@@ -18,8 +19,8 @@ type FormClient struct {
 
 	last_object *model.Object
 
-	html_form   js.Value
-	data_object map[string]string
+	html_form js.Value
+	form_data map[string]string
 
 	action_create bool
 	action_update bool

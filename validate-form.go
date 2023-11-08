@@ -6,10 +6,6 @@ import (
 
 func (f *FormClient) validateForm(source_input *js.Value) error {
 
-	if f.data_object == nil {
-		f.data_object = make(map[string]string, len(f.last_object.Fields))
-	}
-
 	// 1 chequear input origen
 	source_field_name := source_input.Get("name").String()
 
@@ -28,8 +24,8 @@ func (f *FormClient) validateForm(source_input *js.Value) error {
 		return err
 	}
 
-	// 2 chequear todos los input menos origen
-	for _, field := range f.last_object.Fields {
+	// 2 chequear todos los inputs renderizados y solo del objeto origen
+	for _, field := range f.last_object.FieldsToFormValidate() {
 
 		if field.Name != source_field_name {
 
@@ -45,10 +41,7 @@ func (f *FormClient) validateForm(source_input *js.Value) error {
 		}
 	}
 
-	f.Log("*RESUMEN FORMULARIO:")
-	for key, value := range f.data_object {
-		f.Log("FIELD NAME: ", key, " VALUE: ", value)
-	}
+	f.Log("*RESUMEN FORMULARIO:", f.form_data)
 
 	return nil
 }

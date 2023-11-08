@@ -20,35 +20,24 @@ func (f *FormClient) currentObject(input []js.Value) error {
 
 	form_name := f.html_form.Get("name").String()
 
-	if f.last_object == nil {
-		// log("primer inicio objeto id: " + form_name)
-		return f.setCurrentObject(form_name)
-
-	} else {
-
-		if f.last_object.Name != form_name { //objeto ha cambiado
-			f.Log("objeto cambio nuevo: " + form_name + ", anterior: " + f.last_object.Name)
-
-			//reset data formulario
-			f.data_object = nil
-
-			return f.setCurrentObject(form_name)
-		}
-	}
-
-	return nil
+	return f.SetNewFormObject(form_name)
 }
 
-func (f *FormClient) setCurrentObject(object_name string) error {
+func (f *FormClient) SetNewFormObject(new_object_name string) error {
 
-	object, err := f.GetObjectByName(object_name)
-	if err != nil {
-		return err
+	if f.last_object == nil || f.last_object.Name != new_object_name {
+
+		// f.Log("formulario nuevo: " + new_object_name + ", anterior: " + f.last_object.Name)
+
+		object, err := f.GetObjectByName(new_object_name)
+		if err != nil {
+			return err
+		}
+
+		f.last_object = object // update object
 	}
 
-	f.last_object = object
-
-	f.Log("*OBJETO ACTUAL:", f.last_object.Name)
+	// f.Log("*OBJETO ACTUAL FORMULARIO:", f.last_object.Name)
 
 	return nil
 }

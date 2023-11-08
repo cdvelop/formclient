@@ -21,11 +21,29 @@ func (f FormClient) FormAutoFill(o *model.Object) error {
 	return nil
 }
 
-func (f FormClient) FormComplete(o *model.Object, data map[string]string) error {
+func (f *FormClient) setFormData(o *model.Object, new_data map[string]string) {
+	f.form_data = make(map[string]string, len(o.Fields))
+	if new_data != nil {
+		f.form_data = new_data
+	}
+
+	f.Log("***SET FORM DATA:", o.Name, new_data)
+
+}
+
+func (f *FormClient) FormComplete(o *model.Object, data map[string]string) error {
 
 	if o == nil {
-		return model.Error("formComplete object nil")
+		return model.Error("FormComplete object nil")
 	}
+
+	err := f.SetNewFormObject(o.Name)
+	if err != nil {
+		return err
+	}
+
+	//reset data formulario
+	f.setFormData(f.last_object, data)
 
 	module_html, err := f.GetHtmlModule(o.ModuleName)
 	if err != nil {
@@ -90,25 +108,23 @@ func (f FormClient) FormComplete(o *model.Object, data map[string]string) error 
 
 				object_id := data[o.PrimaryKeyName()]
 
-				// f.Log("ID OBJECTO CON ARCHIVOS SELECCIONADO :", object_id)
+				f.ReadStringDataAsyncInDB(model.ReadDBParams{
+					FROM_TABLE:      "file",
+					WHERE:           []string{"object_id"},
+					SEARCH_ARGUMENT: object_id,
+					ORDER_BY:        "",
+					SORT_DESC:       false,
+				}, func(new_data []map[string]string, err error) {
 
-				f.ReadDataAsyncInDB(
-					"file",
-					[]map[string]string{{
-						"WHERE": "object_id",
-						"ARGS":  object_id,
-					},
-					}, func(new_data []map[string]string, err error) {
+					if err != nil {
+						f.Log(err)
+						return
+					}
 
-						if err != nil {
-							f.Log(err)
-							return
-						}
-
-						new_html := field.Input.BuildItemView(new_data...)
-						// f.dom.Log("FILE INPUT HTML NUEVO:", new_html, "en input:", input)
-						input.Set("innerHTML", new_html)
-					})
+					new_html := field.Input.BuildItemView(new_data...)
+					// f.dom.Log("FILE INPUT HTML NUEVO:", new_html, "en input:", input)
+					input.Set("innerHTML", new_html)
+				})
 
 			} else {
 				f.Log(" ERROR ItemView nulo en FILE INPUT: ", o.Module.ModuleName, field.Name)
