@@ -25,19 +25,19 @@ func (f *FormClient) currentObject(input []js.Value) error {
 
 func (f *FormClient) SetNewFormObject(new_object_name string) error {
 
-	if f.last_object == nil || f.last_object.Name != new_object_name {
+	if f.obj == nil || f.obj.Name != new_object_name {
 
-		// f.Log("formulario nuevo: " + new_object_name + ", anterior: " + f.last_object.Name)
+		// f.Log("formulario nuevo: " + new_object_name + ", anterior: " + f.obj.Name)
 
 		object, err := f.GetObjectByName(new_object_name)
 		if err != nil {
 			return err
 		}
 
-		f.last_object = object // update object
+		f.obj = object // update object
 	}
 
-	// f.Log("*OBJETO ACTUAL FORMULARIO:", f.last_object.Name)
+	// f.Log("*OBJETO ACTUAL FORMULARIO:", f.obj.Name)
 
 	return nil
 }

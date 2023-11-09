@@ -17,10 +17,9 @@ type FormClient struct {
 	model.DataBaseAdapter
 	domAdapter
 
-	last_object *model.Object
+	obj *model.Object
 
 	html_form js.Value
-	form_data map[string]string
 
 	action_create bool
 	action_update bool

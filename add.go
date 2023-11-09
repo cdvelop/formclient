@@ -11,9 +11,8 @@ func Add(dom domAdapter, db model.DataBaseAdapter) *FormClient {
 	f := FormClient{
 		domAdapter:      dom,
 		DataBaseAdapter: db,
-		last_object:     &model.Object{},
+		obj:             &model.Object{},
 		html_form:       js.Value{},
-		form_data:       map[string]string{},
 		action_create:   false,
 		action_update:   false,
 		action_delete:   false,

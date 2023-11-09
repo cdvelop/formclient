@@ -9,7 +9,7 @@ func (f *FormClient) validateForm(source_input *js.Value) error {
 	// 1 chequear input origen
 	source_field_name := source_input.Get("name").String()
 
-	source_fields, err := f.last_object.GetFieldsByNames(source_field_name)
+	source_fields, err := f.obj.GetFieldsByNames(source_field_name)
 	if err != nil {
 		return err
 	}
@@ -25,7 +25,7 @@ func (f *FormClient) validateForm(source_input *js.Value) error {
 	}
 
 	// 2 chequear todos los inputs renderizados y solo del objeto origen
-	for _, field := range f.last_object.FieldsToFormValidate() {
+	for _, field := range f.obj.FieldsToFormValidate() {
 
 		if field.Name != source_field_name {
 
@@ -41,7 +41,7 @@ func (f *FormClient) validateForm(source_input *js.Value) error {
 		}
 	}
 
-	f.Log("*RESUMEN FORMULARIO:", f.form_data)
+	f.Log("*RESUMEN FORMULARIO:", f.obj.FormData)
 
 	return nil
 }

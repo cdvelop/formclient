@@ -22,9 +22,9 @@ func (f FormClient) FormAutoFill(o *model.Object) error {
 }
 
 func (f *FormClient) setFormData(o *model.Object, new_data map[string]string) {
-	f.form_data = make(map[string]string, len(o.Fields))
+	f.obj.FormData = make(map[string]string, len(o.Fields))
 	if new_data != nil {
-		f.form_data = new_data
+		f.obj.FormData = new_data
 	}
 
 	f.Log("***SET FORM DATA:", o.Name, new_data)
@@ -43,7 +43,7 @@ func (f *FormClient) FormComplete(o *model.Object, data map[string]string) error
 	}
 
 	//reset data formulario
-	f.setFormData(f.last_object, data)
+	f.setFormData(f.obj, data)
 
 	module_html, err := f.GetHtmlModule(o.ModuleName)
 	if err != nil {
