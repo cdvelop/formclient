@@ -27,7 +27,7 @@ func (f *FormClient) setFormData(o *model.Object, new_data map[string]string) {
 		f.obj.FormData = new_data
 	}
 
-	f.Log("***SET FORM DATA:", o.Name, new_data)
+	// f.Log("***SET FORM DATA:", o.Name, new_data)
 
 }
 
