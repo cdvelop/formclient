@@ -3,12 +3,13 @@ package formclient
 import (
 	"syscall/js"
 
+	"github.com/cdvelop/dom"
 	"github.com/cdvelop/model"
 )
 
 func (f FormClient) FormReset(o *model.Object) error {
 
-	module_html, err := f.GetHtmlModule(o.ModuleName)
+	module_html, err := dom.GetHtmlModule(o.ModuleName)
 	if err != nil {
 		return err
 	}

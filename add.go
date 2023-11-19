@@ -6,11 +6,13 @@ import (
 	"github.com/cdvelop/model"
 )
 
-func Add(dom domAdapter, db model.DataBaseAdapter) *FormClient {
+func Add(h *model.Handlers) error {
 
-	f := FormClient{
-		domAdapter:      dom,
-		DataBaseAdapter: db,
+	f := &FormClient{
+		DataBaseAdapter: h,
+		MessageAdapter:  h.MessageAdapter,
+		Logger:          h,
+		ObjectsHandler:  h,
 		obj:             &model.Object{},
 		html_form:       js.Value{},
 		action_create:   false,
@@ -18,7 +20,15 @@ func Add(dom domAdapter, db model.DataBaseAdapter) *FormClient {
 		action_delete:   false,
 		timeout_typing:  js.Value{},
 	}
+	h.FormAdapter = f
 
-	return &f
+	err := h.CheckInterfaces("formclient config", *f)
+	if err != nil {
+		return err
+	}
+
+	js.Global().Set("userFormTyping", js.FuncOf(f.UserFormTyping))
+
+	return nil
 
 }

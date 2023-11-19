@@ -6,16 +6,11 @@ import (
 	"github.com/cdvelop/model"
 )
 
-type domAdapter interface {
-	UserMessage(message ...any) interface{}
-	model.Logger
-	GetHtmlModule(module_name string) (*js.Value, error)
-	GetObjectByName(name_to_search string) (*model.Object, error)
-}
-
 type FormClient struct {
 	model.DataBaseAdapter
-	domAdapter
+	model.MessageAdapter
+	model.Logger
+	model.ObjectsHandler
 
 	obj *model.Object
 

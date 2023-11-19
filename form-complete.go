@@ -1,8 +1,9 @@
 package formclient
 
 import (
-	"strings"
+	"github.com/cdvelop/strings"
 
+	"github.com/cdvelop/dom"
 	"github.com/cdvelop/model"
 )
 
@@ -27,7 +28,7 @@ func (f *FormClient) setFormData(o *model.Object, new_data map[string]string) {
 		f.obj.FormData = new_data
 	}
 
-	// f.Log("***SET FORM DATA:", o.Name, new_data)
+	// f.Log("***SET FORM DATA:", o.ObjectName, new_data)
 
 }
 
@@ -37,7 +38,7 @@ func (f *FormClient) FormComplete(o *model.Object, data map[string]string) error
 		return model.Error("FormComplete object nil")
 	}
 
-	err := f.SetNewFormObject(o.Name)
+	err := f.SetNewFormObject(o.ObjectName)
 	if err != nil {
 		return err
 	}
@@ -45,7 +46,7 @@ func (f *FormClient) FormComplete(o *model.Object, data map[string]string) error
 	//reset data formulario
 	f.setFormData(f.obj, data)
 
-	module_html, err := f.GetHtmlModule(o.ModuleName)
+	module_html, err := dom.GetHtmlModule(o.ModuleName)
 	if err != nil {
 		return err
 	}
@@ -81,7 +82,7 @@ func (f *FormClient) FormComplete(o *model.Object, data map[string]string) error
 
 				value := input_check.Get("value").String()
 
-				if strings.Contains(new_value, value) {
+				if strings.Contains(new_value, value) != 0 {
 					input_check.Set("checked", true)
 				}
 

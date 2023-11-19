@@ -25,13 +25,13 @@ func (f *FormClient) currentObject(input []js.Value) error {
 
 func (f *FormClient) SetNewFormObject(new_object_name string) error {
 
-	if f.obj == nil || f.obj.Name != new_object_name {
+	if f.obj == nil || f.obj.ObjectName != new_object_name {
 
 		// f.Log("formulario nuevo: " + new_object_name + ", anterior: " + f.obj.Name)
 
 		object, err := f.GetObjectByName(new_object_name)
 		if err != nil {
-			return err
+			return model.Error("SetNewFormObject", err)
 		}
 
 		f.obj = object // update object
