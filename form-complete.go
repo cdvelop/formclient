@@ -3,7 +3,6 @@ package formclient
 import (
 	"github.com/cdvelop/strings"
 
-	"github.com/cdvelop/dom"
 	"github.com/cdvelop/model"
 )
 
@@ -46,12 +45,22 @@ func (f *FormClient) FormComplete(o *model.Object, data map[string]string) error
 	//reset data formulario
 	f.setFormData(f.obj, data)
 
-	module_html, err := dom.GetHtmlModule(o.ModuleName)
+	// html, err := f.GetHtmlModule(o.ModuleName)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// module_html,ok := html.(*js.Value)
+	//  if !ok {
+	// 	return model.Error("FormComplete error *js.Value no fue enviado en GetHtmlModule")
+	//  }
+
+	module_html, err := f.getHtmlModule(o.ModuleName)
 	if err != nil {
 		return err
 	}
 
-	form, err := f.getHtmlForm(*module_html, o)
+	form, err := f.getHtmlForm(module_html, o)
 	if err != nil {
 		return err
 	}
@@ -105,7 +114,7 @@ func (f *FormClient) FormComplete(o *model.Object, data map[string]string) error
 
 			// Log("SELECCIÓN radio: ", f.Name, input)
 		case "file":
-			if field.Input.ItemView != nil {
+			if field.Input.ItemViewAdapter != nil {
 
 				object_id := data[o.PrimaryKeyName()]
 
@@ -122,13 +131,13 @@ func (f *FormClient) FormComplete(o *model.Object, data map[string]string) error
 						return
 					}
 
-					new_html := field.Input.BuildItemView(new_data...)
+					new_html := field.Input.BuildItemsView(new_data...)
 					// f.dom.Log("FILE INPUT HTML NUEVO:", new_html, "en input:", input)
 					input.Set("innerHTML", new_html)
 				})
 
 			} else {
-				f.Log(" ERROR ItemView nulo en FILE INPUT: ", o.Module.ModuleName, field.Name)
+				f.Log(" ERROR ItemViewAdapter nulo en FILE INPUT: ", o.Module.ModuleName, field.Name)
 			}
 
 		default:

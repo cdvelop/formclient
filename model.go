@@ -11,6 +11,7 @@ type FormClient struct {
 	model.MessageAdapter
 	model.Logger
 	model.ObjectsHandler
+	model.HtmlAdapter
 
 	obj *model.Object
 

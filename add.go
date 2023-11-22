@@ -13,6 +13,7 @@ func Add(h *model.Handlers) error {
 		MessageAdapter:  h.MessageAdapter,
 		Logger:          h,
 		ObjectsHandler:  h,
+		HtmlAdapter:     h,
 		obj:             &model.Object{},
 		html_form:       js.Value{},
 		action_create:   false,

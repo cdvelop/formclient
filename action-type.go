@@ -4,7 +4,7 @@ func (f *FormClient) setActionType() {
 
 	id, exist := f.obj.FormData[f.obj.PrimaryKeyName()]
 
-	if exist {
+	if exist && id != "" {
 
 		f.Log("id existe y no este vació:", id)
 		f.action_create = false
