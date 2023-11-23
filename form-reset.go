@@ -6,15 +6,15 @@ import (
 	"github.com/cdvelop/model"
 )
 
-func (f FormClient) FormReset(o *model.Object) error {
+func (f FormClient) FormReset(o *model.Object) (err string) {
 
 	module_html, err := f.getHtmlModule(o.ModuleName)
-	if err != nil {
+	if err != "" {
 		return err
 	}
 
 	form, err := f.getHtmlForm(module_html, o)
-	if err != nil {
+	if err != "" {
 		return err
 	}
 
@@ -26,14 +26,14 @@ func (f FormClient) FormReset(o *model.Object) error {
 	return f.reset(form, o)
 }
 
-func (f FormClient) reset(form *js.Value, o *model.Object) error {
+func (f FormClient) reset(form *js.Value, o *model.Object) (err string) {
 
 	form.Call("reset")
 
 	for _, field := range o.RenderFields() {
 
 		if field.Input.ResetViewAdapter != nil {
-			field.Input.ResetAdapterView()
+			err = field.Input.ResetAdapterView()
 		}
 	}
 
@@ -41,5 +41,5 @@ func (f FormClient) reset(form *js.Value, o *model.Object) error {
 
 	f.setActionType()
 
-	return nil
+	return
 }

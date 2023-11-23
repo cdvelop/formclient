@@ -2,21 +2,19 @@ package formclient
 
 import (
 	"syscall/js"
-
-	"github.com/cdvelop/model"
 )
 
-func (f *FormClient) getHtmlModule(module_name string) (js.Value, error) {
+func (f *FormClient) getHtmlModule(module_name string) (v js.Value, err string) {
 
-	html, err := f.GetHtmlModule(module_name)
-	if err != nil {
-		return js.Value{}, err
+	html, e := f.GetHtmlModule(module_name)
+	if e != "" {
+		return js.Value{}, e
 	}
 
 	module_html, ok := html.(js.Value)
 	if !ok {
-		return js.Value{}, model.Error("FormComplete error js.Value no fue enviado en GetHtmlModule")
+		return js.Value{}, "FormComplete error js.Value no fue enviado en GetHtmlModule"
 	}
 
-	return module_html, nil
+	return module_html, ""
 }

@@ -6,14 +6,14 @@ import (
 	"github.com/cdvelop/model"
 )
 
-func (f *FormClient) fieldCheck(field *model.Field, input *js.Value, new_value string) error {
+func (f *FormClient) fieldCheck(field *model.Field, input *js.Value, new_value string) (err string) {
 
 	if field.IsPrimaryKey(f.obj) && new_value == "" {
-		return nil
+		return ""
 	}
 
-	err := inputRight(field, *input, new_value)
-	if err != nil {
+	err = inputRight(field, *input, new_value)
+	if err != "" {
 		return err
 	}
 
@@ -22,7 +22,7 @@ func (f *FormClient) fieldCheck(field *model.Field, input *js.Value, new_value s
 		f.obj.FormData[field.Name] = new_value
 
 		err := f.UpdateObjectsInDB(f.obj.Table, f.obj.FormData)
-		if err != nil {
+		if err != "" {
 			return err
 		}
 
@@ -30,5 +30,5 @@ func (f *FormClient) fieldCheck(field *model.Field, input *js.Value, new_value s
 
 	}
 
-	return nil
+	return ""
 }

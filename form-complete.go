@@ -6,19 +6,19 @@ import (
 	"github.com/cdvelop/model"
 )
 
-func (f FormClient) FormAutoFill(o *model.Object) error {
+func (f FormClient) FormAutoFill(o *model.Object) (err string) {
 
 	test_data, err := o.TestData(1, true, false)
-	if err != nil {
+	if err != "" {
 		return err
 	}
 
 	err = f.FormComplete(o, test_data[0])
-	if err != nil {
+	if err != "" {
 		return err
 	}
 
-	return nil
+	return ""
 }
 
 func (f *FormClient) setFormData(o *model.Object, new_data map[string]string) {
@@ -31,15 +31,15 @@ func (f *FormClient) setFormData(o *model.Object, new_data map[string]string) {
 
 }
 
-func (f *FormClient) FormComplete(o *model.Object, data map[string]string) error {
+func (f *FormClient) FormComplete(o *model.Object, data map[string]string) (err string) {
 
 	if o == nil {
-		return model.Error("FormComplete object nil")
+		return "FormComplete object nil"
 	}
 
-	err := f.SetNewFormObject(o.ObjectName)
-	if err != nil {
-		return err
+	err = f.SetNewFormObject(o.ObjectName)
+	if err != "" {
+		return
 	}
 
 	//reset data formulario
@@ -52,28 +52,28 @@ func (f *FormClient) FormComplete(o *model.Object, data map[string]string) error
 
 	// module_html,ok := html.(*js.Value)
 	//  if !ok {
-	// 	return model.Error("FormComplete error *js.Value no fue enviado en GetHtmlModule")
+	// 	return "FormComplete error *js.Value no fue enviado en GetHtmlModule")
 	//  }
 
 	module_html, err := f.getHtmlModule(o.ModuleName)
-	if err != nil {
+	if err != "" {
 		return err
 	}
 
 	form, err := f.getHtmlForm(module_html, o)
-	if err != nil {
+	if err != "" {
 		return err
 	}
 
 	err = f.reset(form, o)
-	if err != nil {
+	if err != "" {
 		return err
 	}
 
 	for _, field := range o.RenderFields() {
 
 		input, err := getFormInput(*form, field)
-		if err != nil {
+		if err != "" {
 			return err
 		}
 
@@ -124,9 +124,9 @@ func (f *FormClient) FormComplete(o *model.Object, data map[string]string) error
 					SEARCH_ARGUMENT: object_id,
 					ORDER_BY:        "",
 					SORT_DESC:       false,
-				}, func(new_data []map[string]string, err error) {
+				}, func(new_data []map[string]string, err string) {
 
-					if err != nil {
+					if err != "" {
 						f.Log(err)
 						return
 					}
@@ -150,5 +150,5 @@ func (f *FormClient) FormComplete(o *model.Object, data map[string]string) error
 
 	}
 
-	return nil
+	return ""
 }

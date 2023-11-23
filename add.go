@@ -6,7 +6,7 @@ import (
 	"github.com/cdvelop/model"
 )
 
-func Add(h *model.Handlers) error {
+func Add(h *model.Handlers) (err string) {
 
 	f := &FormClient{
 		DataBaseAdapter: h,
@@ -23,13 +23,13 @@ func Add(h *model.Handlers) error {
 	}
 	h.FormAdapter = f
 
-	err := h.CheckInterfaces("formclient config", *f)
-	if err != nil {
+	err = h.CheckInterfaces("formclient config", *f)
+	if err != "" {
 		return err
 	}
 
 	js.Global().Set("userFormTyping", js.FuncOf(f.UserFormTyping))
 
-	return nil
+	return ""
 
 }

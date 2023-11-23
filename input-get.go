@@ -6,11 +6,11 @@ import (
 	"github.com/cdvelop/model"
 )
 
-func (d FormClient) getFormInputValue(field *model.Field) (input js.Value, value string, err error) {
+func (d FormClient) getFormInputValue(field *model.Field) (input js.Value, value, err string) {
 
 	input = d.html_form.Get(field.Name)
 	if !input.Truthy() {
-		return js.Value{}, "", model.Error("input html", field.Name, "no encontrado")
+		return js.Value{}, "", "getFormInputValue error input html " + field.Name + " no encontrado"
 	}
 	var temp js.Value
 
@@ -50,19 +50,17 @@ func (d FormClient) getFormInputValue(field *model.Field) (input js.Value, value
 		value = input.Get("value").String()
 	}
 
-	return input, value, nil
+	return input, value, ""
 }
 
-func getFormInput(form js.Value, f model.Field) (js.Value, error) {
+func getFormInput(form js.Value, f model.Field) (input js.Value, err string) {
 
 	if f.Input == nil {
-		return js.Value{}, model.Error("getFormInput error. input nulo en campo", f.Name)
+		return js.Value{}, "getFormInput error. input nulo en campo " + f.Name
 	}
 
 	var input_type string
 	var all string
-
-	var input js.Value
 
 	switch f.Input.HtmlName() {
 	case "checkbox", "radio":
@@ -73,8 +71,8 @@ func getFormInput(form js.Value, f model.Field) (js.Value, error) {
 
 	input = form.Call("querySelector"+all, input_type+"[name='"+f.Name+"']")
 	if !input.Truthy() {
-		return js.Value{}, model.Error("input:", f.Name, "tipo:", f.Input.HtmlName(), "no encontrado en formulario")
+		return js.Value{}, "input: " + f.Name + " tipo: " + f.Input.HtmlName() + "no encontrado en formulario"
 	}
 
-	return input, nil
+	return input, ""
 }

@@ -17,12 +17,12 @@ func (f *FormClient) UserFormTyping(this js.Value, source_input []js.Value) inte
 		// f.Log("ejecutando acción después de 500 milisegundos")
 
 		err := f.currentObject(source_input)
-		if err != nil {
+		if err != "" {
 			return f.Log(err)
 		}
 
 		err = f.validateForm(&source_input[0])
-		if err != nil {
+		if err != "" {
 			return f.Log(err)
 		}
 

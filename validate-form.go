@@ -4,24 +4,24 @@ import (
 	"syscall/js"
 )
 
-func (f *FormClient) validateForm(source_input *js.Value) error {
+func (f *FormClient) validateForm(source_input *js.Value) (err string) {
 
 	// 1 chequear input origen
 	source_field_name := source_input.Get("name").String()
 
 	source_fields, err := f.obj.GetFieldsByNames(source_field_name)
-	if err != nil {
-		return err
+	if err != "" {
+		return
 	}
 
 	input, new_value, err := f.getFormInputValue(&source_fields[0])
-	if err != nil {
-		return err
+	if err != "" {
+		return
 	}
 
 	err = f.fieldCheck(&source_fields[0], &input, new_value)
-	if err != nil {
-		return err
+	if err != "" {
+		return
 	}
 
 	// 2 chequear todos los inputs renderizados y solo del objeto origen
@@ -29,19 +29,20 @@ func (f *FormClient) validateForm(source_input *js.Value) error {
 
 		if field.Name != source_field_name {
 
-			input, new_value, err := f.getFormInputValue(&field)
-			if err != nil {
-				return err
+			input, new_value, e := f.getFormInputValue(&field)
+			if e != "" {
+				err = e
+				return
 			}
 
 			err = f.fieldCheck(&field, &input, new_value)
-			if err != nil {
-				return err
+			if err != "" {
+				return
 			}
 		}
 	}
 
 	f.Log("*RESUMEN FORMULARIO:", f.obj.FormData)
 
-	return nil
+	return
 }
