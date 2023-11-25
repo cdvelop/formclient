@@ -2,42 +2,45 @@ package formclient
 
 import (
 	"syscall/js"
-
-	"github.com/cdvelop/model"
 )
 
-func (f FormClient) FormReset(o *model.Object) (err string) {
+func (f *FormClient) FormReset(object_name string) (err string) {
 
-	module_html, err := f.getHtmlModule(o.ModuleName)
+	err = f.setNewFormObject(object_name)
+	if err != "" {
+		return
+	}
+
+	module_html, err := f.getHtmlModule()
 	if err != "" {
 		return err
 	}
 
-	form, err := f.getHtmlForm(module_html, o)
+	form, err := f.getHtmlForm(module_html)
 	if err != "" {
 		return err
 	}
 
 	// seteamos los valores del formulario
-	for k := range o.FormData {
-		o.FormData[k] = ""
+	for k := range f.obj.FormData {
+		f.obj.FormData[k] = ""
 	}
 
-	return f.reset(form, o)
+	return f.reset(form)
 }
 
-func (f FormClient) reset(form *js.Value, o *model.Object) (err string) {
+func (f *FormClient) reset(form *js.Value) (err string) {
 
 	form.Call("reset")
 
-	for _, field := range o.RenderFields() {
+	for _, field := range f.obj.RenderFields() {
 
 		if field.Input.ResetViewAdapter != nil {
 			err = field.Input.ResetAdapterView()
 		}
 	}
 
-	f.Log("ESTADO FORMULARIO DESPUÉS DE RESET:", o.FormData)
+	f.Log("ESTADO FORMULARIO DESPUÉS DE RESET:", f.obj.FormData)
 
 	f.setActionType()
 

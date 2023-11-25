@@ -18,10 +18,10 @@ func (f *FormClient) currentObject(input []js.Value) (err string) {
 
 	form_name := f.html_form.Get("name").String()
 
-	return f.SetNewFormObject(form_name)
+	return f.setNewFormObject(form_name)
 }
 
-func (f *FormClient) SetNewFormObject(new_object_name string) (err string) {
+func (f *FormClient) setNewFormObject(new_object_name string) (err string) {
 
 	if f.obj == nil || f.obj.ObjectName != new_object_name {
 
@@ -29,7 +29,7 @@ func (f *FormClient) SetNewFormObject(new_object_name string) (err string) {
 
 		object, err := f.GetObjectByName(new_object_name)
 		if err != "" {
-			return "SetNewFormObject " + err
+			return "setNewFormObject " + err
 		}
 
 		f.obj = object // update object

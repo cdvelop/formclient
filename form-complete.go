@@ -6,14 +6,19 @@ import (
 	"github.com/cdvelop/model"
 )
 
-func (f FormClient) FormAutoFill(o *model.Object) (err string) {
+func (f FormClient) FormAutoFill(object_name string) (err string) {
 
-	test_data, err := o.TestData(1, true, false)
+	err = f.setNewFormObject(object_name)
+	if err != "" {
+		return
+	}
+
+	test_data, err := f.obj.TestData(1, true, false)
 	if err != "" {
 		return err
 	}
 
-	err = f.FormComplete(o, test_data[0])
+	err = f.FormComplete(f.obj.ObjectName, test_data[0])
 	if err != "" {
 		return err
 	}
@@ -21,8 +26,8 @@ func (f FormClient) FormAutoFill(o *model.Object) (err string) {
 	return ""
 }
 
-func (f *FormClient) setFormData(o *model.Object, new_data map[string]string) {
-	f.obj.FormData = make(map[string]string, len(o.Fields))
+func (f *FormClient) setFormData(new_data map[string]string) {
+	f.obj.FormData = make(map[string]string, len(f.obj.Fields))
 	if new_data != nil {
 		f.obj.FormData = new_data
 	}
@@ -31,19 +36,19 @@ func (f *FormClient) setFormData(o *model.Object, new_data map[string]string) {
 
 }
 
-func (f *FormClient) FormComplete(o *model.Object, data map[string]string) (err string) {
-
-	if o == nil {
-		return "FormComplete object nil"
+func (f *FormClient) FormComplete(object_name string, data map[string]string) (err string) {
+	const this = "FormComplete error"
+	if len(data) == 0 {
+		return this + "no hay data enviada para completar formulario"
 	}
 
-	err = f.SetNewFormObject(o.ObjectName)
+	err = f.setNewFormObject(object_name)
 	if err != "" {
-		return
+		return this + err
 	}
 
 	//reset data formulario
-	f.setFormData(f.obj, data)
+	f.setFormData(data)
 
 	// html, err := f.GetHtmlModule(o.ModuleName)
 	// if err != nil {
@@ -55,26 +60,26 @@ func (f *FormClient) FormComplete(o *model.Object, data map[string]string) (err 
 	// 	return "FormComplete error *js.Value no fue enviado en GetHtmlModule")
 	//  }
 
-	module_html, err := f.getHtmlModule(o.ModuleName)
+	module_html, err := f.getHtmlModule()
 	if err != "" {
-		return err
+		return this + err
 	}
 
-	form, err := f.getHtmlForm(module_html, o)
+	form, err := f.getHtmlForm(module_html)
 	if err != "" {
-		return err
+		return this + err
 	}
 
-	err = f.reset(form, o)
+	err = f.reset(form)
 	if err != "" {
-		return err
+		return this + err
 	}
 
-	for _, field := range o.RenderFields() {
+	for _, field := range f.obj.RenderFields() {
 
 		input, err := getFormInput(*form, field)
 		if err != "" {
-			return err
+			return this + err
 		}
 
 		new_value := data[field.Name]
@@ -115,34 +120,42 @@ func (f *FormClient) FormComplete(o *model.Object, data map[string]string) (err 
 			// Log("SELECCIÓN radio: ", f.Name, input)
 		case "file":
 			if field.Input.ItemViewAdapter != nil {
+				object_id := data[f.obj.PrimaryKeyName()]
+				if object_id != "" {
 
-				object_id := data[o.PrimaryKeyName()]
+					f.ReadStringDataAsyncInDB(model.ReadDBParams{
+						FROM_TABLE:      "file",
+						WHERE:           []string{"object_id"},
+						SEARCH_ARGUMENT: object_id,
+						ORDER_BY:        "",
+						SORT_DESC:       false,
+					}, func(new_data []map[string]string, err string) {
 
-				f.ReadStringDataAsyncInDB(model.ReadDBParams{
-					FROM_TABLE:      "file",
-					WHERE:           []string{"object_id"},
-					SEARCH_ARGUMENT: object_id,
-					ORDER_BY:        "",
-					SORT_DESC:       false,
-				}, func(new_data []map[string]string, err string) {
+						if err != "" {
+							f.Log(this + err)
+							return
+						}
 
-					if err != "" {
-						f.Log(err)
-						return
-					}
-
-					new_html := field.Input.BuildItemsView(new_data...)
-					// f.dom.Log("FILE INPUT HTML NUEVO:", new_html, "en input:", input)
-					input.Set("innerHTML", new_html)
-				})
+						new_html := field.Input.BuildItemsView(new_data...)
+						// f.dom.Log("FILE INPUT HTML NUEVO:", new_html, "en input:", input)
+						input.Set("innerHTML", new_html)
+					})
+				}
 
 			} else {
-				f.Log(" ERROR ItemViewAdapter nulo en FILE INPUT: ", o.Module.ModuleName, field.Name)
+				return this + "nil ItemViewAdapter en FILE INPUT: " + f.obj.Module.ModuleName + " " + field.Name
+			}
+		case "textarea":
+			input.Set("value", new_value)
+
+			err = f.obj.CallFunction("TextAreaAutoGrow", input)
+			if err != "" {
+				f.Log(this + err)
 			}
 
 		default:
-
 			input.Set("value", new_value)
+
 		}
 
 		// f.Log("*** ", field.Name, " html name:", field.Input.HtmlName())
