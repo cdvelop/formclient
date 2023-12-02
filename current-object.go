@@ -6,14 +6,14 @@ import (
 )
 
 func (f *FormClient) currentObject(input []js.Value) (err string) {
-
+	const this = "currentObject error "
 	if len(input) != 1 {
-		return "en currentObject: se esperaban 1 argumentos y se enviaron: " + strconv.Itoa(len(input))
+		return this + "se esperaban 1 argumentos y se enviaron: " + strconv.Itoa(len(input))
 	}
 
 	f.html_form = input[0].Get("form")
-	if f.html_form.IsUndefined() {
-		return "en currentObject: no se logro obtener formulario"
+	if !f.html_form.Truthy() {
+		return this + "no se logro obtener formulario"
 	}
 
 	form_name := f.html_form.Get("name").String()

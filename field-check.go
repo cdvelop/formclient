@@ -21,12 +21,15 @@ func (f *FormClient) fieldCheck(field *model.Field, input *js.Value, new_value s
 		f.Log("---new value:", new_value, "campo:", field.Name)
 		f.obj.FormData[field.Name] = new_value
 
-		err := f.UpdateObjectsInDB(f.obj.Table, f.obj.FormData)
-		if err != "" {
-			return err
-		}
+		if f.obj.FrontHandler.NotifyFormComplete == nil {
 
-		f.UserMessage("Registro Actualizado")
+			err := f.UpdateObjectsInDB(f.obj.Table, f.obj.FormData)
+			if err != "" {
+				return err
+			}
+
+			f.UserMessage("Registro Actualizado")
+		}
 
 	}
 

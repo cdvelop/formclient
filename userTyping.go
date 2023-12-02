@@ -26,8 +26,6 @@ func (f *FormClient) UserFormTyping(this js.Value, source_input []js.Value) inte
 			return f.Log(err)
 		}
 
-		f.setActionType()
-
 		f.Log("formulario correcto")
 
 		// err = f.db.CreateObjectsInDB()

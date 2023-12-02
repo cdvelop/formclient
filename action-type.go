@@ -1,29 +1,27 @@
 package formclient
 
-func (f *FormClient) setActionType() {
+func (f *FormClient) setActionTypeFormData() {
 
 	id, exist := f.obj.FormData[f.obj.PrimaryKeyName()]
 
 	if exist && id != "" {
 
-		f.Log("id existe y no este vació:", id)
-		f.action_create = false
+		f.Log("id existe y no este vació its_update_or_delete id:", id)
 
-		if !f.action_delete {
-			f.action_update = true
-			f.Log("acción es de tipo update")
-
-		} else {
-			f.Log("acción es de tipo delete")
-		}
+		f.its_update_or_delete = true
 
 	} else {
 
-		f.Log("no hay id es un objeto nuevo")
+		f.Log("no hay id its_new", id)
 
-		f.action_create = true
-		f.action_update = false
-		f.action_delete = false
+		f.its_new = true
+
 	}
 
+	return
+}
+
+func (f *FormClient) resetActionType() {
+	f.its_new = false
+	f.its_update_or_delete = false
 }

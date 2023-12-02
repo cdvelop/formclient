@@ -18,7 +18,7 @@ func (f FormClient) FormAutoFill(object_name string) (err string) {
 		return err
 	}
 
-	err = f.FormComplete(f.obj.ObjectName, test_data[0])
+	err = f.FormComplete(f.obj.ObjectName, test_data[0], false, false)
 	if err != "" {
 		return err
 	}
@@ -36,8 +36,8 @@ func (f *FormClient) setFormData(new_data map[string]string) {
 
 }
 
-func (f *FormClient) FormComplete(object_name string, data map[string]string) (err string) {
-	const this = "FormComplete error"
+func (f *FormClient) FormComplete(object_name string, data map[string]string, validate, auto_grow bool) (err string) {
+	const this = "FormComplete error "
 	if len(data) == 0 {
 		return this + "no hay data enviada para completar formulario"
 	}
@@ -84,7 +84,7 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string) (e
 
 		new_value := data[field.Name]
 
-		// f.dom.Log("SELECCIÓN: ", field.Input.HtmlName(), field.Name, "VALOR:", new_value, input)
+		// f.Log("SELECCIÓN: ", field.Input.HtmlName(), field.Name, "VALOR:", new_value, input)
 
 		switch field.Input.HtmlName() {
 		case "checkbox":
@@ -148,9 +148,11 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string) (e
 		case "textarea":
 			input.Set("value", new_value)
 
-			err = f.obj.CallFunction("TextAreaAutoGrow", input)
-			if err != "" {
-				f.Log(this + err)
+			if auto_grow {
+				err = f.obj.CallFunction("TextAreaAutoGrow", input)
+				if err != "" {
+					f.Log(this + err)
+				}
 			}
 
 		default:
@@ -159,7 +161,13 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string) (e
 		}
 
 		// f.Log("*** ", field.Name, " html name:", field.Input.HtmlName())
-		// f.Log("*** value:", new_value)
+
+		if validate && new_value != "" {
+			err = inputRight(&field, input, new_value)
+			if err != "" {
+				return err
+			}
+		}
 
 	}
 

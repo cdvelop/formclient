@@ -17,9 +17,8 @@ type FormClient struct {
 
 	html_form js.Value
 
-	action_create bool
-	action_update bool
-	action_delete bool
+	its_new              bool
+	its_update_or_delete bool
 
 	timeout_typing js.Value
 }
