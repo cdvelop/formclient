@@ -27,7 +27,7 @@ func (f FormClient) FormAutoFill(object_name string) (err string) {
 }
 
 func (f *FormClient) setFormData(new_data map[string]string) {
-	f.obj.FormData = make(map[string]string, len(f.obj.Fields))
+	f.obj.FormData = make(map[string]string, 0)
 	if new_data != nil {
 		f.obj.FormData = new_data
 	}
@@ -42,23 +42,12 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 		return this + "no hay data enviada para completar formulario"
 	}
 
+	f.Log("info DATA PARA COMPLETAR FORMULARIO:", data)
+
 	err = f.setNewFormObject(object_name)
 	if err != "" {
 		return this + err
 	}
-
-	//reset data formulario
-	f.setFormData(data)
-
-	// html, err := f.GetHtmlModule(o.ModuleName)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// module_html,ok := html.(*js.Value)
-	//  if !ok {
-	// 	return "FormComplete error *js.Value no fue enviado en GetHtmlModule")
-	//  }
 
 	module_html, err := f.getHtmlModule()
 	if err != "" {
@@ -74,6 +63,8 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 	if err != "" {
 		return this + err
 	}
+
+	f.setFormData(data)
 
 	for _, field := range f.obj.RenderFields() {
 

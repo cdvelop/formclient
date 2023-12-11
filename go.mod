@@ -3,12 +3,6 @@ module github.com/cdvelop/formclient
 go 1.20
 
 require (
-	github.com/cdvelop/model v0.0.77
-	github.com/cdvelop/strings v0.0.7
+	github.com/cdvelop/model v0.0.79
+	github.com/cdvelop/strings v0.0.8
 )
-
-replace github.com/cdvelop/model => ../model
-
-replace github.com/cdvelop/dom => ../dom
-
-replace github.com/cdvelop/strings => ../strings
