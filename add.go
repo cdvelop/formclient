@@ -15,7 +15,7 @@ func Add(h *model.Handlers) (err string) {
 		ObjectsHandler:       h,
 		HtmlAdapter:          h,
 		obj:                  &model.Object{},
-		html_form:            js.Value{},
+		form:                 js.Value{},
 		its_new:              false,
 		its_update_or_delete: false,
 		timeout_typing:       js.Value{},

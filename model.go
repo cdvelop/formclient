@@ -13,9 +13,10 @@ type FormClient struct {
 	model.ObjectsHandler
 	model.HtmlAdapter
 
-	obj *model.Object
+	obj *model.Object //objeto actual
 
-	html_form js.Value
+	module js.Value //modulo html
+	form   js.Value //formulario html
 
 	its_new              bool
 	its_update_or_delete bool

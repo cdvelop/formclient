@@ -8,7 +8,7 @@ import (
 
 func (d FormClient) getFormInputValue(field *model.Field) (input js.Value, value, err string) {
 
-	input = d.html_form.Get(field.Name)
+	input = d.form.Get(field.Name)
 	if !input.Truthy() {
 		return js.Value{}, "", "getFormInputValue error input html " + field.Name + " no encontrado"
 	}
@@ -53,7 +53,7 @@ func (d FormClient) getFormInputValue(field *model.Field) (input js.Value, value
 	return input, value, ""
 }
 
-func getFormInput(form js.Value, f model.Field) (input js.Value, err string) {
+func (c FormClient) getFormInput(f model.Field) (input js.Value, err string) {
 
 	if f.Input == nil {
 		return js.Value{}, "getFormInput error. input nulo en campo " + f.Name
@@ -69,7 +69,7 @@ func getFormInput(form js.Value, f model.Field) (input js.Value, err string) {
 
 	}
 
-	input = form.Call("querySelector"+all, input_type+"[name='"+f.Name+"']")
+	input = c.form.Call("querySelector"+all, input_type+"[name='"+f.Name+"']")
 	if !input.Truthy() {
 		return js.Value{}, "input: " + f.Name + " tipo: " + f.Input.HtmlName() + "no encontrado en formulario"
 	}
