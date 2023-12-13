@@ -1,4 +1,4 @@
-github.com/cdvelop/model v0.0.82 h1:IMNQVomtpvfRV6KEofUeKn01XFeCKodiBRyxJE4mdR4=
-github.com/cdvelop/model v0.0.82/go.mod h1:cYJNxbv1WV/aDgiVPV9VXs8LrbF8+0nU+X+KfSevyzw=
-github.com/cdvelop/strings v0.0.8 h1:liZNqboKkU3YpetJF/6FpWlWErSJfK7ISnIWD6SAf/E=
-github.com/cdvelop/strings v0.0.8/go.mod h1:zNexDeXHRETbMmlmNThQeM7ksRsvzrphsCfwuSxaURk=
+github.com/cdvelop/model v0.0.86 h1:7XKwQ15mPmhqFccCz80/GYp3SSIu6jdE9nKLYXNeymM=
+github.com/cdvelop/model v0.0.86/go.mod h1:cYJNxbv1WV/aDgiVPV9VXs8LrbF8+0nU+X+KfSevyzw=
+github.com/cdvelop/strings v0.0.9 h1:yDh2msl3EQja0dHw+oOHfD9ymQMa50KakKTkjsXDnvw=
+github.com/cdvelop/strings v0.0.9/go.mod h1:zNexDeXHRETbMmlmNThQeM7ksRsvzrphsCfwuSxaURk=
