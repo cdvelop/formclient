@@ -103,7 +103,7 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 				if object_id != "" {
 
 					f.ReadAsyncDataDB(model.ReadParams{
-						FROM_TABLES:     "file",
+						FROM_TABLE:      "file",
 						WHERE:           []string{"object_id"},
 						SEARCH_ARGUMENT: object_id,
 						ORDER_BY:        "",
