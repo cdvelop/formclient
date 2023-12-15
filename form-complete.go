@@ -103,19 +103,19 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 				if object_id != "" {
 
 					f.ReadAsyncDataDB(model.ReadParams{
-						FROM_TABLE:      "file",
+						FROM_TABLES:     "file",
 						WHERE:           []string{"object_id"},
 						SEARCH_ARGUMENT: object_id,
 						ORDER_BY:        "",
 						SORT_DESC:       false,
-					}, func(r model.ReadResult) {
+					}, func(r model.ReadResults) {
 
 						if r.Error != "" {
 							f.Log(this + r.Error)
 							return
 						}
 
-						new_html := field.Input.BuildItemsView(r.DataString...)
+						new_html := field.Input.BuildItemsView(r.ResultsString...)
 						// f.dom.Log("FILE INPUT HTML NUEVO:", new_html, "en input:", input)
 						input.Set("innerHTML", new_html)
 					})
