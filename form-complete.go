@@ -128,7 +128,7 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 			input.Set("value", new_value)
 
 			if auto_grow {
-				err = f.obj.CallFunction("TextAreaAutoGrow", input)
+				_, err = f.obj.CallFunction("TextAreaAutoGrow", input)
 				if err != "" {
 					f.Log(this + err)
 				}
