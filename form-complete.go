@@ -103,15 +103,14 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 				if object_id != "" {
 
 					f.ReadAsyncDataDB(model.ReadParams{
-						FROM_TABLE:      "file",
-						WHERE:           []string{"object_id"},
-						SEARCH_ARGUMENT: object_id,
-						ORDER_BY:        "",
-						SORT_DESC:       false,
-					}, func(r model.ReadResults) {
+						FROM_TABLE: "file",
+						WHERE:      []map[string]string{{"object_id": object_id}},
+						ORDER_BY:   "",
+						SORT_DESC:  false,
+					}, func(r *model.ReadResults, err string) {
 
-						if r.Error != "" {
-							f.Log(this + r.Error)
+						if err != "" {
+							f.Log(this + err)
 							return
 						}
 
