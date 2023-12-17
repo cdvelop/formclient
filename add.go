@@ -6,7 +6,7 @@ import (
 	"github.com/cdvelop/model"
 )
 
-func Add(h *model.Handlers) (err string) {
+func Add(h *model.MainHandler) (err string) {
 
 	f := &FormClient{
 		DataBaseAdapter:      h,

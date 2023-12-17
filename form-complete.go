@@ -35,21 +35,21 @@ func (f *FormClient) setFormData(new_data map[string]string) {
 }
 
 func (f *FormClient) FormComplete(object_name string, data map[string]string, validate, auto_grow bool) (err string) {
-	const this = "FormComplete error "
+	const e = "FormComplete error "
 	if len(data) == 0 {
-		return this + "no hay data enviada para completar formulario"
+		return e + "no hay data enviada para completar formulario"
 	}
 
 	// f.Log("DATA PARA COMPLETAR FORMULARIO:", data)
 
 	err = f.setNewFormObject(object_name)
 	if err != "" {
-		return this + err
+		return e + err
 	}
 
 	err = f.reset()
 	if err != "" {
-		return this + err
+		return e + err
 	}
 
 	f.setFormData(data)
@@ -58,7 +58,7 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 
 		input, err := f.getFormInput(field)
 		if err != "" {
-			return this + err
+			return e + err
 		}
 
 		new_value := data[field.Name]
@@ -110,18 +110,21 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 					}, func(r *model.ReadResults, err string) {
 
 						if err != "" {
-							f.Log(this + err)
+							f.Log(e + err)
 							return
 						}
+						// f.Log("RESULTADO FILE ID object_id:", object_id, r.ResultsString)
 
-						new_html := field.Input.BuildItemsView(r.ResultsString...)
-						// f.dom.Log("FILE INPUT HTML NUEVO:", new_html, "en input:", input)
-						input.Set("innerHTML", new_html)
+						if len(r.ResultsString) != 0 {
+							new_html := field.Input.BuildItemsView(r.ResultsString...)
+							// f.Log("FILE INPUT HTML NUEVO:", new_html, "en input:", input)
+							input.Set("innerHTML", new_html)
+						}
 					})
 				}
 
 			} else {
-				return this + "nil ItemViewAdapter en FILE INPUT: " + f.obj.Module.ModuleName + " " + field.Name
+				return e + "nil ItemViewAdapter en FILE INPUT: " + f.obj.Module.ModuleName + " " + field.Name
 			}
 		case "textarea":
 			input.Set("value", new_value)
@@ -129,7 +132,7 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 			if auto_grow {
 				_, err = f.obj.CallFunction("TextAreaAutoGrow", input)
 				if err != "" {
-					f.Log(this + err)
+					f.Log(e + err)
 				}
 			}
 
@@ -143,7 +146,7 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 		if validate && new_value != "" {
 			err = inputRight(&field, input, new_value)
 			if err != "" {
-				return err
+				return e + err
 			}
 		}
 
