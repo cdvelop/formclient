@@ -10,10 +10,11 @@ type FormClient struct {
 	model.DataBaseAdapter
 	model.MessageAdapter
 	model.Logger
-	model.ObjectsHandler
+	model.ObjectHandler
 	model.HtmlAdapter
 
-	obj *model.Object //objeto actual
+	// obj *model.Object //objeto actual
+	html_any any
 
 	module js.Value //modulo html
 	form   js.Value //formulario html
@@ -22,4 +23,6 @@ type FormClient struct {
 	its_update_or_delete bool
 
 	timeout_typing js.Value
+
+	err string
 }

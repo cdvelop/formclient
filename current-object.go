@@ -5,47 +5,50 @@ import (
 	"syscall/js"
 )
 
-func (f *FormClient) currentObject(input []js.Value) (err string) {
-	const this = "currentObject error "
+func (f *FormClient) prepareFormActual(input []js.Value) (err string) {
+	const e = "prepareFormActual "
 	if len(input) != 1 {
-		return this + "se esperaban 1 argumentos y se enviaron: " + strconv.Itoa(len(input))
+		return e + "se esperaban 1 argumentos y se enviaron: " + strconv.Itoa(len(input))
 	}
 
 	f.form = input[0].Get("form")
 	if !f.form.Truthy() {
-		return this + "no se logro obtener formulario"
+		return e + "no se logro obtener formulario"
 	}
 
-	form_name := f.form.Get("name").String()
+	f.err = f.SetActualObject(f.form.Get("name").String())
+	if f.err != "" {
+		return e + f.err
+	}
 
-	return f.setNewFormObject(form_name)
+	return f.setNewFormObject()
 }
 
-func (f *FormClient) setNewFormObject(new_object_name string) (err string) {
+func (f *FormClient) setNewFormObject() (err string) {
 
-	const t = "setNewFormObject error "
+	const e = "setNewFormObject "
 
-	if f.obj == nil || f.obj.ObjectName != new_object_name {
+	// if f.obj == nil || f.obj.ObjectName != new_object_name {
 
-		// f.Log("formulario nuevo: " + new_object_name + ", anterior: " + f.obj.Name)
+	// f.Log("formulario nuevo: " + new_object_name + ", anterior: " + f.obj.Name)
 
-		f.obj, err = f.GetObjectByNameMainHandler(new_object_name)
-		if err != "" {
-			return t + err
-		}
+	// f.obj, err = f.MainHandlerGetObjectByName(new_object_name)
+	// if err != "" {
+	// 	return t + err
+	// }
 
-		err = f.setHtmlModule()
-		if err != "" {
-			return t + err
-		}
-
-		err = f.setHtmlForm()
-		if err != "" {
-			return t + err
-		}
-
-		// update object
+	err = f.setHtmlModule()
+	if err != "" {
+		return e + err
 	}
+
+	err = f.setHtmlForm()
+	if err != "" {
+		return e + err
+	}
+
+	// update object
+	// }
 
 	// f.Log("*OBJETO ACTUAL FORMULARIO:", f.obj.Name)
 
@@ -53,16 +56,17 @@ func (f *FormClient) setNewFormObject(new_object_name string) (err string) {
 }
 
 func (f *FormClient) setHtmlModule() (err string) {
+	const e = " func setHtmlModule"
 
-	html, e := f.GetHtmlModule(f.obj.ModuleName)
-	if e != "" {
-		return e
+	f.html_any, err = f.GetHtmlModule(f.ObjectActual().ModuleName)
+	if err != "" {
+		return err + e
 	}
 	var ok bool
 
-	f.module, ok = html.(js.Value)
+	f.module, ok = f.html_any.(js.Value)
 	if !ok {
-		return "setHtmlModule error js.Value no fue enviado en GetHtmlModule"
+		return "js.Value no fue enviado en GetHtmlModule" + e
 	}
 
 	return ""
@@ -70,10 +74,10 @@ func (f *FormClient) setHtmlModule() (err string) {
 
 func (f *FormClient) setHtmlForm() (err string) {
 
-	f.form = f.module.Call("querySelector", `form[name="`+f.obj.ObjectName+`"]`)
+	f.form = f.module.Call("querySelector", `form[name="`+f.ObjectActual().ObjectName+`"]`)
 	// form := module_html.Call("querySelector", "form", "#"+o.ObjectName)
 	if !f.form.Truthy() {
-		return "error no se logro obtener formulario " + f.obj.ObjectName
+		return "no se logro obtener formulario " + f.ObjectActual().ObjectName + " func setHtmlForm"
 	}
 
 	return ""

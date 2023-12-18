@@ -2,7 +2,7 @@ package formclient
 
 func (f *FormClient) setActionTypeFormData() {
 
-	id, exist := f.obj.FormData[f.obj.PrimaryKeyName()]
+	id, exist := f.ObjectActual().FormData[f.ObjectActual().PrimaryKeyName()]
 
 	if exist && id != "" {
 

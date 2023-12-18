@@ -9,7 +9,7 @@ func (f *FormClient) validateForm(source_input *js.Value) (err string) {
 	// 1 chequear input origen
 	source_field_name := source_input.Get("name").String()
 
-	source_fields, err := f.obj.GetFieldsByNames(source_field_name)
+	source_fields, err := f.ObjectActual().GetFieldsByNames(source_field_name)
 	if err != "" {
 		return
 	}
@@ -26,7 +26,7 @@ func (f *FormClient) validateForm(source_input *js.Value) (err string) {
 
 	f.setActionTypeFormData()
 
-	err = f.obj.ValidateData(f.its_new, f.its_update_or_delete, f.obj.FormData)
+	err = f.ObjectActual().ValidateData(f.its_new, f.its_update_or_delete, f.ObjectActual().FormData)
 	if err != "" {
 		return
 	}
@@ -49,10 +49,10 @@ func (f *FormClient) validateForm(source_input *js.Value) (err string) {
 	// 	}
 	// }
 
-	f.Log("* RESUMEN FORMULARIO OK:", f.obj.FormData)
+	f.Log("* RESUMEN FORMULARIO OK:", f.ObjectActual().FormData)
 
-	if f.obj.FrontHandler.NotifyFormComplete != nil {
-		f.obj.FrontHandler.NotifyFormIsOK()
+	if f.ObjectActual().FrontHandler.NotifyFormComplete != nil {
+		f.ObjectActual().FrontHandler.NotifyFormIsOK()
 	}
 
 	return

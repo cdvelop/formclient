@@ -8,7 +8,7 @@ import (
 
 func (f *FormClient) fieldCheck(field *model.Field, input *js.Value, new_value string) (err string) {
 
-	if field.IsPrimaryKey(f.obj) && new_value == "" {
+	if field.IsPrimaryKey(f.ObjectActual()) && new_value == "" {
 		return ""
 	}
 
@@ -17,13 +17,13 @@ func (f *FormClient) fieldCheck(field *model.Field, input *js.Value, new_value s
 		return err
 	}
 
-	if f.obj.FormData[field.Name] != new_value {
+	if f.ObjectActual().FormData[field.Name] != new_value {
 		f.Log("---new value:", new_value, "campo:", field.Name)
-		f.obj.FormData[field.Name] = new_value
+		f.ObjectActual().FormData[field.Name] = new_value
 
-		if f.obj.FrontHandler.NotifyFormComplete == nil {
+		if f.ObjectActual().FrontHandler.NotifyFormComplete == nil {
 
-			err := f.UpdateObjectsInDB(f.obj.Table, f.obj.FormData)
+			err := f.UpdateObjectsInDB(f.ObjectActual().Table, f.ObjectActual().FormData)
 			if err != "" {
 				return err
 			}

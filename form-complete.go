@@ -6,43 +6,43 @@ import (
 	"github.com/cdvelop/model"
 )
 
-func (f FormClient) FormAutoFill(object_name string) (err string) {
+// func (f FormClient) FormAutoFill(object_name string) (err string) {
 
-	err = f.setNewFormObject(object_name)
-	if err != "" {
-		return
-	}
+// 	err = f.setNewFormObject(object_name)
+// 	if err != "" {
+// 		return
+// 	}
 
-	test_data, err := f.obj.TestData(1, true, false)
-	if err != "" {
-		return err
-	}
+// 	test_data, err := f.ObjectActual().TestData(1, true, false)
+// 	if err != "" {
+// 		return err
+// 	}
 
-	err = f.FormComplete(f.obj.ObjectName, test_data[0], false, false)
-	if err != "" {
-		return err
-	}
+// 	err = f.FormComplete(f.ObjectActual().ObjectName, test_data[0], false, false)
+// 	if err != "" {
+// 		return err
+// 	}
 
-	return ""
-}
+// 	return ""
+// }
 
-func (f *FormClient) setFormData(new_data map[string]string) {
-	f.obj.FormData = make(map[string]string, 0)
-	if new_data != nil {
-		f.obj.FormData = new_data
-	}
-	// f.Log("***SET FORM DATA:", o.ObjectName, new_data)
-}
+// func (f *FormClient) setFormData(new_data map[string]string) {
+// 	f.obj.FormData = make(map[string]string, 0)
+// 	if new_data != nil {
+// 		f.obj.FormData = new_data
+// 	}
+// 	// f.Log("***SET FORM DATA:", o.ObjectName, new_data)
+// }
 
-func (f *FormClient) FormComplete(object_name string, data map[string]string, validate, auto_grow bool) (err string) {
-	const e = "FormComplete error "
-	if len(data) == 0 {
-		return e + "no hay data enviada para completar formulario"
+func (f *FormClient) FormComplete(validate, auto_grow bool) (err string) {
+	const e = "FormComplete "
+	if len(f.ObjectActual().FormData) == 0 {
+		return e + "no hay data para completar formulario en el objeto:" + f.ObjectActual().ObjectName
 	}
 
 	// f.Log("DATA PARA COMPLETAR FORMULARIO:", data)
 
-	err = f.setNewFormObject(object_name)
+	err = f.setNewFormObject()
 	if err != "" {
 		return e + err
 	}
@@ -52,16 +52,14 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 		return e + err
 	}
 
-	f.setFormData(data)
-
-	for _, field := range f.obj.RenderFields() {
+	for _, field := range f.ObjectActual().RenderFields() {
 
 		input, err := f.getFormInput(field)
 		if err != "" {
 			return e + err
 		}
 
-		new_value := data[field.Name]
+		new_value := f.ObjectActual().FormData[field.Name]
 
 		// f.Log("SELECCIÓN: ", field.Input.HtmlName(), field.Name, "VALOR:", new_value, input)
 
@@ -99,7 +97,7 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 			// Log("SELECCIÓN radio: ", f.Name, input)
 		case "file":
 			if field.Input.ItemViewAdapter != nil {
-				object_id := data[f.obj.PrimaryKeyName()]
+				object_id := f.ObjectActual().FormData[f.ObjectActual().PrimaryKeyName()]
 				if object_id != "" {
 
 					f.ReadAsyncDataDB(model.ReadParams{
@@ -124,13 +122,13 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 				}
 
 			} else {
-				return e + "nil ItemViewAdapter en FILE INPUT: " + f.obj.Module.ModuleName + " " + field.Name
+				return e + "nil ItemViewAdapter en FILE INPUT: " + f.ObjectActual().Module.ModuleName + " " + field.Name
 			}
 		case "textarea":
 			input.Set("value", new_value)
 
 			if auto_grow {
-				_, err = f.obj.CallFunction("TextAreaAutoGrow", input)
+				_, err = f.ObjectActual().CallFunction("TextAreaAutoGrow", input)
 				if err != "" {
 					f.Log(e + err)
 				}
