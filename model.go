@@ -10,7 +10,7 @@ type FormClient struct {
 	model.DataBaseAdapter
 	model.MessageAdapter
 	model.Logger
-	model.ObjectHandler
+	model.ObjectHandlerAdapter
 	model.HtmlAdapter
 
 	// obj *model.Object //objeto actual

@@ -6,13 +6,13 @@ import (
 	"github.com/cdvelop/model"
 )
 
-func Add(h *model.MainHandler) (err string) {
+func Add(h *model.MainHandler, o model.ObjectHandlerAdapter) {
 
 	f := &FormClient{
 		DataBaseAdapter:      h,
 		MessageAdapter:       h.MessageAdapter,
 		Logger:               h,
-		ObjectHandler:        h,
+		ObjectHandlerAdapter: o,
 		HtmlAdapter:          h,
 		form:                 js.Value{},
 		its_new:              false,
@@ -21,13 +21,6 @@ func Add(h *model.MainHandler) (err string) {
 	}
 	h.FormAdapter = f
 
-	err = h.CheckInterfaces("formclient config", *f)
-	if err != "" {
-		return err
-	}
-
 	js.Global().Set("userFormTyping", js.FuncOf(f.UserFormTyping))
-
-	return ""
 
 }

@@ -34,8 +34,14 @@ import (
 // 	// f.Log("***SET FORM DATA:", o.ObjectName, new_data)
 // }
 
-func (f *FormClient) FormComplete(validate, auto_grow bool) (err string) {
+func (f *FormClient) FormComplete(object_name string, validate, auto_grow bool) (err string) {
 	const e = "FormComplete "
+
+	f.err = f.SetActualObject(object_name)
+	if f.err != "" {
+		return e + f.err
+	}
+
 	if len(f.ObjectActual().FormData) == 0 {
 		return e + "no hay data para completar formulario en el objeto:" + f.ObjectActual().ObjectName
 	}

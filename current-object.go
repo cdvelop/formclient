@@ -32,7 +32,7 @@ func (f *FormClient) setNewFormObject() (err string) {
 
 	// f.Log("formulario nuevo: " + new_object_name + ", anterior: " + f.obj.Name)
 
-	// f.obj, err = f.MainHandlerGetObjectByName(new_object_name)
+	// f.obj, err = f.ObjectActual(new_object_name)
 	// if err != "" {
 	// 	return t + err
 	// }
