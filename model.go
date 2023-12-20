@@ -12,6 +12,9 @@ type FormClient struct {
 	model.Logger
 	model.ObjectHandlerAdapter
 	model.HtmlAdapter
+	model.DomAdapter
+	model.ThemeAdapter
+	model.TimeAdapter
 
 	// obj *model.Object //objeto actual
 	html_any any

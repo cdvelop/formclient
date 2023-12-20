@@ -1,6 +1,8 @@
 package formclient
 
 import (
+	"syscall/js"
+
 	"github.com/cdvelop/strings"
 
 	"github.com/cdvelop/model"
@@ -34,7 +36,7 @@ import (
 // 	// f.Log("***SET FORM DATA:", o.ObjectName, new_data)
 // }
 
-func (f *FormClient) FormComplete(object_name string, validate, auto_grow bool) (err string) {
+func (f *FormClient) FormComplete(object_name string, data map[string]string, validate, auto_grow bool) (err string) {
 	const e = "FormComplete "
 
 	f.err = f.SetActualObject(object_name)
@@ -42,7 +44,7 @@ func (f *FormClient) FormComplete(object_name string, validate, auto_grow bool) 
 		return e + f.err
 	}
 
-	if len(f.ObjectActual().FormData) == 0 {
+	if len(data) == 0 {
 		return e + "no hay data para completar formulario en el objeto:" + f.ObjectActual().ObjectName
 	}
 
@@ -60,14 +62,13 @@ func (f *FormClient) FormComplete(object_name string, validate, auto_grow bool) 
 
 	for _, field := range f.ObjectActual().RenderFields() {
 
-		input, err := f.getFormInput(field)
+		input, err := f.getFormInput(&field)
 		if err != "" {
 			return e + err
 		}
 
-		new_value := f.ObjectActual().FormData[field.Name]
-
-		// f.Log("SELECCIÓN: ", field.Input.HtmlName(), field.Name, "VALOR:", new_value, input)
+		new_value := data[field.Name]
+		// f.Log("SELECCIÓN OK: ", field.Input.HtmlName(), field.Name, "VALOR:", new_value, input)
 
 		switch field.Input.HtmlName() {
 		case "checkbox":
@@ -103,7 +104,8 @@ func (f *FormClient) FormComplete(object_name string, validate, auto_grow bool) 
 			// Log("SELECCIÓN radio: ", f.Name, input)
 		case "file":
 			if field.Input.ItemViewAdapter != nil {
-				object_id := f.ObjectActual().FormData[f.ObjectActual().PrimaryKeyName()]
+				object_id := data[f.ObjectActual().PrimaryKeyName()]
+
 				if object_id != "" {
 
 					f.ReadAsyncDataDB(model.ReadParams{
@@ -145,13 +147,10 @@ func (f *FormClient) FormComplete(object_name string, validate, auto_grow bool) 
 
 		}
 
-		// f.Log("*** ", field.Name, " html name:", field.Input.HtmlName())
+		// f.Log("*** ", field.Name, " html name:", field.Input.HtmlName(), "value:", new_value)
 
 		if validate && new_value != "" {
-			err = inputRight(&field, input, new_value)
-			if err != "" {
-				return e + err
-			}
+			f.UserFormTyping(js.Global(), []js.Value{js.ValueOf(input)})
 		}
 
 	}

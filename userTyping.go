@@ -16,7 +16,7 @@ func (f *FormClient) UserFormTyping(this js.Value, source_input []js.Value) inte
 
 		// f.Log("ejecutando acción después de 500 milisegundos")
 
-		f.err = f.prepareFormActual(source_input)
+		f.err = f.formPrepareFromInput(source_input)
 		if f.err != "" {
 			return f.Log(f.err)
 		}
@@ -34,5 +34,11 @@ func (f *FormClient) UserFormTyping(this js.Value, source_input []js.Value) inte
 	}), 500)
 
 	return nil
+
+}
+
+func (f *FormClient) SimulateUserFormTyping() {
+
+	f.Log("SimulateUserFormTyping:", f.ObjectActual().ObjectName)
 
 }

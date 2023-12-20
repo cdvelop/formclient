@@ -21,6 +21,7 @@ func (f *FormClient) fieldCheck(field *model.Field, input *js.Value, new_value s
 		f.Log("---new value:", new_value, "campo:", field.Name)
 		f.ObjectActual().FormData[field.Name] = new_value
 
+		// actualizamos en la base de datos local solo si el controlador no tiene notificación
 		if f.ObjectActual().FrontHandler.NotifyFormComplete == nil {
 
 			err := f.UpdateObjectsInDB(f.ObjectActual().Table, f.ObjectActual().FormData)

@@ -53,6 +53,8 @@ func (f *FormClient) validateForm(source_input *js.Value) (err string) {
 
 	if f.ObjectActual().FrontHandler.NotifyFormComplete != nil {
 		f.ObjectActual().FrontHandler.NotifyFormIsOK()
+	} else {
+		f.Log(f.ObjectActual().ObjectName, "no tiene NotifyFormComplete")
 	}
 
 	return

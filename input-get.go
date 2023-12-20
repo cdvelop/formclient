@@ -53,7 +53,7 @@ func (d FormClient) getFormInputValue(field *model.Field) (input js.Value, value
 	return input, value, ""
 }
 
-func (c FormClient) getFormInput(f model.Field) (input js.Value, err string) {
+func (c FormClient) getFormInput(f *model.Field) (input js.Value, err string) {
 
 	if f.Input == nil {
 		return js.Value{}, "getFormInput error. input nulo en campo " + f.Name
