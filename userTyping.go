@@ -36,9 +36,3 @@ func (f *FormClient) UserFormTyping(this js.Value, source_input []js.Value) inte
 	return nil
 
 }
-
-func (f *FormClient) SimulateUserFormTyping() {
-
-	f.Log("SimulateUserFormTyping:", f.ObjectActual().ObjectName)
-
-}

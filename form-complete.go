@@ -8,34 +8,6 @@ import (
 	"github.com/cdvelop/model"
 )
 
-// func (f FormClient) FormAutoFill(object_name string) (err string) {
-
-// 	err = f.setNewFormObject(object_name)
-// 	if err != "" {
-// 		return
-// 	}
-
-// 	test_data, err := f.ObjectActual().TestData(1, true, false)
-// 	if err != "" {
-// 		return err
-// 	}
-
-// 	err = f.FormComplete(f.ObjectActual().ObjectName, test_data[0], false, false)
-// 	if err != "" {
-// 		return err
-// 	}
-
-// 	return ""
-// }
-
-// func (f *FormClient) setFormData(new_data map[string]string) {
-// 	f.obj.FormData = make(map[string]string, 0)
-// 	if new_data != nil {
-// 		f.obj.FormData = new_data
-// 	}
-// 	// f.Log("***SET FORM DATA:", o.ObjectName, new_data)
-// }
-
 func (f *FormClient) FormComplete(object_name string, data map[string]string, validate, auto_grow bool) (err string) {
 	const e = "FormComplete "
 
@@ -48,17 +20,15 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 		return e + "no hay data para completar formulario en el objeto:" + f.ObjectActual().ObjectName
 	}
 
-	// f.Log("DATA PARA COMPLETAR FORMULARIO:", data)
-
 	err = f.setNewFormObject()
 	if err != "" {
 		return e + err
 	}
 
-	err = f.reset()
-	if err != "" {
-		return e + err
-	}
+	// reseteamos solo los campos del formulario html
+	f.reset()
+
+	// f.Log("DATA PARA COMPLETAR FORMULARIO:", data)
 
 	for _, field := range f.ObjectActual().RenderFields() {
 
@@ -157,3 +127,31 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 
 	return ""
 }
+
+// func (f FormClient) FormAutoFill(object_name string) (err string) {
+
+// 	err = f.setNewFormObject(object_name)
+// 	if err != "" {
+// 		return
+// 	}
+
+// 	test_data, err := f.ObjectActual().TestData(1, true, false)
+// 	if err != "" {
+// 		return err
+// 	}
+
+// 	err = f.FormComplete(f.ObjectActual().ObjectName, test_data[0], false, false)
+// 	if err != "" {
+// 		return err
+// 	}
+
+// 	return ""
+// }
+
+// func (f *FormClient) setFormData(new_data map[string]string) {
+// 	f.obj.FormData = make(map[string]string, 0)
+// 	if new_data != nil {
+// 		f.obj.FormData = new_data
+// 	}
+// 	// f.Log("***SET FORM DATA:", o.ObjectName, new_data)
+// }

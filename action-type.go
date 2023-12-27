@@ -17,8 +17,6 @@ func (f *FormClient) setActionTypeFormData() {
 		f.its_new = true
 
 	}
-
-	return
 }
 
 func (f *FormClient) resetActionType() {

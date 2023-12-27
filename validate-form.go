@@ -19,43 +19,59 @@ func (f *FormClient) validateForm(source_input *js.Value) (err string) {
 		return
 	}
 
-	err = f.fieldCheck(&source_fields[0], &input, new_value)
-	if err != "" {
-		return
-	}
-
 	f.setActionTypeFormData()
 
-	err = f.ObjectActual().ValidateData(f.its_new, f.its_update_or_delete, f.ObjectActual().FormData)
-	if err != "" {
+	// f.Log("f.its_new:", f.its_new)
+	// f.Log("f.its_update_or_delete:", f.its_update_or_delete)
+
+	f.err = f.fieldCheck(&source_fields[0], &input, new_value)
+	if f.err != "" {
+		f.notify(f.err)
 		return
 	}
 
-	// // 2 chequear todos los inputs renderizados y solo del objeto origen
-	// for _, field := range f.obj.FieldsToFormValidate() {
-
-	// 	if field.Name != source_field_name {
-
-	// 		input, new_value, e := f.getFormInputValue(&field)
-	// 		if e != "" {
-	// 			err = e
-	// 			return
-	// 		}
-
-	// 		err = f.fieldCheck(&field, &input, new_value)
-	// 		if err != "" {
-	// 			return
-	// 		}
-	// 	}
-	// }
+	err = f.ObjectActual().ValidateData(f.its_new, f.its_update_or_delete, f.ObjectActual().FormData)
 
 	f.Log("* RESUMEN FORMULARIO OK:", f.ObjectActual().FormData)
 
-	if f.ObjectActual().FrontHandler.NotifyFormComplete != nil {
-		f.ObjectActual().FrontHandler.NotifyFormIsOK()
-	} else {
-		f.Log(f.ObjectActual().ObjectName, "no tiene NotifyFormComplete")
-	}
+	f.notify(err)
 
 	return
+}
+
+func (f *FormClient) notify(err string) {
+	if f.ObjectActual().FrontHandler.FormNotify != nil {
+
+		if err != "" {
+
+			f.ObjectActual().FrontHandler.NotifyFormERR()
+
+		} else {
+			f.ObjectActual().FrontHandler.NotifyFormIsOK()
+
+		}
+
+	} else if err == "" && f.its_new {
+
+		f.Log(f.ObjectActual().ObjectName, "no tiene FormNotify creamos la vista err:", err)
+		// si no hay error y es de tipo nuevo
+
+		err = f.CreateObjectsInDB(f.ObjectActual().Table, true, f.ObjectActual().FormData)
+		if err != "" {
+			f.UserMessage(err)
+		} else {
+
+			// r.Log("en db ", f.ObjectActual().FormData)
+			err = f.ObjectActual().FrontHandler.SetObjectInDomAfterCreate(f.ObjectActual().FormData)
+			if err != "" {
+				f.UserMessage(err)
+			} else { // click en el elemento creado
+
+				f.Log(f.ObjectActual().ClickingID())
+
+			}
+		}
+
+	}
+
 }
