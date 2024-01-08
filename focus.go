@@ -7,11 +7,13 @@ import (
 // focus_field_name default focus in first element
 func (f FormClient) FormInputFocus(object_name string, focus_field_name ...string) (err string) {
 	const e = "FormInputFocus "
-	err = f.SetActualObject(object_name)
-	if err != "" {
-		return e + err
+
+	f.object, f.err = f.GetObjectBY(object_name, "")
+	if f.err != "" {
+		return e + f.err
 	}
-	// f.Log(e, f.ObjectActual().ObjectName)
+
+	// f.Log(e, f.object.ObjectName)
 
 	var field_name string
 	// buscamos si se envió algún nombre de campo especifico
@@ -28,7 +30,7 @@ func (f FormClient) FormInputFocus(object_name string, focus_field_name ...strin
 
 	var focus_field *model.Field
 
-	for i, field := range f.ObjectActual().RenderFields() {
+	for i, field := range f.object.RenderFields() {
 
 		// caso 1 si se envió campo especifico
 		if field_name != "" && field.Name == field_name {

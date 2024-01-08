@@ -5,14 +5,14 @@ func (f *FormClient) FormClean(object_name ...string) (err string) {
 
 	for _, name := range object_name {
 
-		err = f.SetActualObject(name)
+		f.object, f.err = f.GetObjectBY(name, "")
 		if err != "" {
-			return e + err
+			return e + f.err
 		}
 
-		err = f.setNewFormObject()
-		if err != "" {
-			return e + err
+		f.err = f.setNewFormObject()
+		if f.err != "" {
+			return e + f.err
 		}
 	}
 
@@ -24,7 +24,7 @@ func (f *FormClient) reset() (err string) {
 	f.form.Call("reset")
 
 	// seteamos los valores del formulario
-	err = f.ObjectActual().ResetInputsViewForm(f.form)
+	err = f.object.ResetInputsViewForm(f.form)
 	if err != "" {
 		return err
 	}

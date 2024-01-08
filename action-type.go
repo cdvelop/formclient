@@ -2,13 +2,13 @@ package formclient
 
 func (f *FormClient) setActionTypeFormData() {
 
-	id, exist := f.ObjectActual().FormData[f.ObjectActual().PrimaryKeyName()]
+	id, exist := f.object.FormData[f.object.PrimaryKeyName()]
 
 	if exist && id != "" {
 
-		f.Log("id existe y no este vació its_update_or_delete id:", id)
+		f.Log("id existe y no este vació its_update id:", id)
 
-		f.its_update_or_delete = true
+		f.its_update = true
 
 	} else {
 
@@ -21,5 +21,5 @@ func (f *FormClient) setActionTypeFormData() {
 
 func (f *FormClient) resetActionType() {
 	f.its_new = false
-	f.its_update_or_delete = false
+	f.its_update = false
 }

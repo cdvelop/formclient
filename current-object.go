@@ -16,7 +16,7 @@ func (f *FormClient) formPrepareFromInput(input []js.Value) (err string) {
 		return e + "no se logro obtener formulario"
 	}
 
-	f.err = f.SetActualObject(f.form.Get("name").String())
+	f.object, f.err = f.GetObjectBY(f.form.Get("name").String(), "")
 	if f.err != "" {
 		return e + f.err
 	}
@@ -46,7 +46,7 @@ func (f *FormClient) setNewFormObject() (err string) {
 func (f *FormClient) setHtmlModule() (err string) {
 	const e = " func setHtmlModule"
 
-	f.html_any, err = f.GetHtmlModule(f.ObjectActual().ModuleName)
+	f.html_any, err = f.GetHtmlModule(f.object.ModuleName)
 	if err != "" {
 		return err + e
 	}
@@ -62,10 +62,10 @@ func (f *FormClient) setHtmlModule() (err string) {
 
 func (f *FormClient) setHtmlForm() (err string) {
 
-	f.form = f.module.Call("querySelector", `form[name="`+f.ObjectActual().ObjectName+`"]`)
+	f.form = f.module.Call("querySelector", `form[name="`+f.object.ObjectName+`"]`)
 	// form := module_html.Call("querySelector", "form", "#"+o.ObjectName)
 	if !f.form.Truthy() {
-		return "no se logro obtener formulario " + f.ObjectActual().ObjectName + " func setHtmlForm"
+		return "no se logro obtener formulario " + f.object.ObjectName + " func setHtmlForm"
 	}
 
 	return ""

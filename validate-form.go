@@ -5,16 +5,16 @@ import (
 )
 
 func (f *FormClient) validateForm(source_input *js.Value) (err string) {
-
+	const e = "validateForm error "
 	// 1 chequear input origen
 	source_field_name := source_input.Get("name").String()
 
-	source_fields, err := f.ObjectActual().GetFieldsByNames(source_field_name)
-	if err != "" {
-		return
+	field, exist := f.object.FieldExist(source_field_name)
+	if !exist {
+		return e + "campo: " + source_field_name + " no existe en " + f.object.ObjectName
 	}
 
-	input, new_value, err := f.getFormInputValue(&source_fields[0])
+	input, new_value, err := f.getFormInputValue(field)
 	if err != "" {
 		return
 	}
@@ -22,56 +22,27 @@ func (f *FormClient) validateForm(source_input *js.Value) (err string) {
 	f.setActionTypeFormData()
 
 	// f.Log("f.its_new:", f.its_new)
-	// f.Log("f.its_update_or_delete:", f.its_update_or_delete)
-
-	f.err = f.fieldCheck(&source_fields[0], &input, new_value)
-	if f.err != "" {
-		f.notify(f.err)
-		return
+	// f.Log("f.its_update:", f.its_update)
+	if field.IsPrimaryKey(f.object) && new_value == "" {
+		return ""
 	}
 
-	err = f.ObjectActual().ValidateData(f.its_new, f.its_update_or_delete, f.ObjectActual().FormData)
-
-	f.Log("* RESUMEN FORMULARIO OK:", f.ObjectActual().FormData)
-
-	f.notify(err)
-
-	return
-}
-
-func (f *FormClient) notify(err string) {
-	if f.ObjectActual().FrontHandler.FormNotify != nil {
-
-		if err != "" {
-
-			f.ObjectActual().FrontHandler.NotifyFormERR()
-
-		} else {
-			f.ObjectActual().FrontHandler.NotifyFormIsOK()
-
-		}
-
-	} else if err == "" && f.its_new {
-
-		f.Log(f.ObjectActual().ObjectName, "no tiene FormNotify creamos la vista err:", err)
-		// si no hay error y es de tipo nuevo
-
-		err = f.CreateObjectsInDB(f.ObjectActual().Table, true, f.ObjectActual().FormData)
-		if err != "" {
-			f.UserMessage(err)
-		} else {
-
-			// r.Log("en db ", f.ObjectActual().FormData)
-			err = f.ObjectActual().FrontHandler.SetObjectInDomAfterCreate(f.ObjectActual().FormData)
-			if err != "" {
-				f.UserMessage(err)
-			} else { // click en el elemento creado
-
-				f.Log(f.ObjectActual().ClickingID())
-
-			}
-		}
-
+	err = inputRight(field, input, new_value)
+	if err != "" {
+		return e + err
 	}
 
+	// el campo se mantiene igual sin cambios
+	if f.object.FormData[field.Name] == new_value {
+		return ""
+	}
+
+	f.Log("---new value:", new_value, "campo:", field.Name)
+
+	// campo cambio su valor actualizamos
+	f.object.FormData[field.Name] = new_value
+
+	// validamos todo el formulario
+
+	return f.object.ValidateData(f.its_new, f.its_update, f.object.FormData)
 }

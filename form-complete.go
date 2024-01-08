@@ -11,13 +11,13 @@ import (
 func (f *FormClient) FormComplete(object_name string, data map[string]string, validate, auto_grow bool) (err string) {
 	const e = "FormComplete "
 
-	f.err = f.SetActualObject(object_name)
+	f.object, f.err = f.GetObjectBY(object_name, "")
 	if f.err != "" {
 		return e + f.err
 	}
 
 	if len(data) == 0 {
-		return e + "no hay data para completar formulario en el objeto:" + f.ObjectActual().ObjectName
+		return e + "no hay data para completar formulario en el objeto:" + f.object.ObjectName
 	}
 
 	err = f.setNewFormObject()
@@ -30,7 +30,7 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 
 	// f.Log("DATA PARA COMPLETAR FORMULARIO:", data)
 
-	for _, field := range f.ObjectActual().RenderFields() {
+	for _, field := range f.object.RenderFields() {
 
 		input, err := f.getFormInput(&field)
 		if err != "" {
@@ -74,7 +74,7 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 			// Log("SELECCIÓN radio: ", f.Name, input)
 		case "file":
 			if field.Input.ItemViewAdapter != nil {
-				object_id := data[f.ObjectActual().PrimaryKeyName()]
+				object_id := data[f.object.PrimaryKeyName()]
 
 				if object_id != "" {
 
@@ -100,13 +100,13 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 				}
 
 			} else {
-				return e + "nil ItemViewAdapter en FILE INPUT: " + f.ObjectActual().Module.ModuleName + " " + field.Name
+				return e + "nil ItemViewAdapter en FILE INPUT: " + f.object.Module.ModuleName + " " + field.Name
 			}
 		case "textarea":
 			input.Set("value", new_value)
 
 			if auto_grow {
-				_, err = f.ObjectActual().CallFunction("TextAreaAutoGrow", input)
+				_, err = f.object.CallFunction("TextAreaAutoGrow", input)
 				if err != "" {
 					f.Log(e + err)
 				}
@@ -135,12 +135,12 @@ func (f *FormClient) FormComplete(object_name string, data map[string]string, va
 // 		return
 // 	}
 
-// 	test_data, err := f.ObjectActual().TestData(1, true, false)
+// 	test_data, err := f.object.TestData(1, true, false)
 // 	if err != "" {
 // 		return err
 // 	}
 
-// 	err = f.FormComplete(f.ObjectActual().ObjectName, test_data[0], false, false)
+// 	err = f.FormComplete(f.object.ObjectName, test_data[0], false, false)
 // 	if err != "" {
 // 		return err
 // 	}

@@ -6,21 +6,21 @@ import (
 	"github.com/cdvelop/model"
 )
 
-func Add(h *model.MainHandler, o model.ObjectHandlerAdapter) {
+func Add(h *model.MainHandler) {
 
 	f := &FormClient{
-		DataBaseAdapter:      h,
-		MessageAdapter:       h.MessageAdapter,
-		Logger:               h,
-		ObjectHandlerAdapter: o,
-		HtmlAdapter:          h,
-		DomAdapter:           h.DomAdapter,
-		ThemeAdapter:         h.ThemeAdapter,
-		TimeAdapter:          h.TimeAdapter,
-		form:                 js.Value{},
-		its_new:              false,
-		its_update_or_delete: false,
-		timeout_typing:       js.Value{},
+		ObjectsHandlerAdapter: h,
+		DataBaseAdapter:       h,
+		MessageAdapter:        h,
+		Logger:                h,
+		HtmlAdapter:           h,
+		DomAdapter:            h,
+		ThemeAdapter:          h,
+		TimeAdapter:           h,
+		form:                  js.Value{},
+		its_new:               false,
+		its_update:            false,
+		timeout_typing:        js.Value{},
 	}
 	h.FormAdapter = f
 

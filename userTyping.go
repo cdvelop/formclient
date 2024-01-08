@@ -22,13 +22,8 @@ func (f *FormClient) UserFormTyping(this js.Value, source_input []js.Value) inte
 		}
 
 		f.err = f.validateForm(&source_input[0])
-		if f.err != "" {
-			return f.Log(f.err)
-		}
 
-		f.Log("formulario correcto")
-
-		// err = f.db.CreateObjectsInDB()
+		f.notify(f.err)
 
 		return nil
 	}), 500)

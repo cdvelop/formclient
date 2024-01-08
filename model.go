@@ -7,10 +7,10 @@ import (
 )
 
 type FormClient struct {
+	model.ObjectsHandlerAdapter
 	model.DataBaseAdapter
 	model.MessageAdapter
 	model.Logger
-	model.ObjectHandlerAdapter
 	model.HtmlAdapter
 	model.DomAdapter
 	model.ThemeAdapter
@@ -22,10 +22,12 @@ type FormClient struct {
 	module js.Value //modulo html
 	form   js.Value //formulario html
 
-	its_new              bool
-	its_update_or_delete bool
+	its_new    bool
+	its_update bool
 
+	object         *model.Object
 	timeout_typing js.Value
 
-	err string
+	name_value string
+	err        string
 }
