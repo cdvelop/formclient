@@ -1,6 +1,7 @@
 package formclient
 
 func (f *FormClient) notify(err string) {
+	const e = "notify error "
 
 	f.Log("* RESUMEN FORMULARIO OK:", f.object.FormData)
 
@@ -11,9 +12,7 @@ func (f *FormClient) notify(err string) {
 	if f.object.FrontHandler.FormNotify != nil {
 
 		if err != "" {
-
 			f.object.FrontHandler.NotifyFormERR(err)
-
 		} else {
 			f.object.FrontHandler.NotifyFormIsOK()
 
@@ -28,24 +27,27 @@ func (f *FormClient) notify(err string) {
 
 			err = f.CreateObjectsInDB(f.object.Table, true, f.object.FormData)
 			if err != "" {
-				f.UserMessage(err)
+				f.UserMessage(e, "error", err)
 				return
 			}
 
 			if f.object.FrontHandler.AfterCreate == nil {
-				f.Log("Objeto:", f.object.ObjectName, " no cuenta con FrontHandler.AfterCreate para actualizar vista")
+				f.Log(e+"Objeto:", f.object.ObjectName, " no cuenta con FrontHandler.AfterCreate para actualizar vista")
 				return
 			}
 
 			// ACTUALIZAMOS LA VISTA DEL OBJETO EN EL DOM
 			err = f.object.FrontHandler.SetObjectInDomAfterCreate(f.object.FormData)
 			if err != "" {
-				f.UserMessage(err)
+				f.UserMessage(e, err)
 				return
 			}
 
 			// click en el elemento nuevo creado
-			f.Log(f.object.ClickingID())
+			err = f.object.ClickingID()
+			if err != "" {
+				f.Log(e, err)
+			}
 
 			f.UserMessage("Nuevo Registro Ingresado")
 
@@ -54,19 +56,19 @@ func (f *FormClient) notify(err string) {
 
 			err := f.UpdateObjectsInDB(f.object.Table, true, f.object.FormData)
 			if err != "" {
-				f.UserMessage(err)
+				f.UserMessage(e, err)
 				return
 			}
 
 			if f.object.FrontHandler.AfterUpdate == nil {
-				f.Log("Objeto:", f.object.ObjectName, " no cuenta con FrontHandler.AfterUpdate para actualizar vista")
+				f.Log(e, "Objeto:", f.object.ObjectName, " no cuenta con FrontHandler.AfterUpdate para actualizar vista")
 				return
 			}
 
 			// ACTUALIZAMOS LA VISTA DEL OBJETO EN EL DOM
 			err = f.object.FrontHandler.SetObjectInDomAfterUpdate(f.object.FormData)
 			if err != "" {
-				f.UserMessage(err)
+				f.UserMessage(e, err)
 				return
 			}
 
